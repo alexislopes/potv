@@ -1,4 +1,4 @@
-const { salva } = require("../services/itemServices");
+const { salva, buscaPorNome } = require("../services/itemServices");
 
 module.exports = app => {
     app.get('/', (req, res) => {
@@ -12,4 +12,9 @@ module.exports = app => {
             item: req.body
         });
     });
+
+    app.get("/busca", (req, res) => {
+        const resp = buscaPorNome("oi");
+        res.json({ message: "OK", name: resp }).status(200);
+    })
 }

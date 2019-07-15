@@ -3,7 +3,11 @@ const { Schema } = mongoose;
 
 const ItemSchema = new Schema({
     name: String,
-    price: Number
+    dataPrice: {
+        price: Number,
+        timestamp: Number,
+        local: String
+    }
 })
 
 mongoose.model('items', ItemSchema);

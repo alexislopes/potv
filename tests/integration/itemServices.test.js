@@ -12,10 +12,11 @@ describe("Item Services", () => {
 
     it("should save an item into the database", async () => {
       const response = await request(app).post("/save").send({
-        name: "maracujá",
+        name: 20,
         price: 10
       });
 
       expect(response.status).toBe(201);
     })
+
 })

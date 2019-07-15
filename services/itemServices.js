@@ -6,4 +6,8 @@ function salva (item)  {
     new Item({name: item.name, price: item.price}).save();
 }
 
-module.exports = { salva };
+function buscaPorNome(item){
+    return "Olavo"
+}
+
+module.exports = { salva, buscaPorNome };
