@@ -1,7 +1,7 @@
 const request = require('supertest');
 
 const factory = require('../factories');
-const app = require('../../index');
+const app = require('../../app');
 
 describe("Item Services", () => {
     test("should save an item into the database", async () => {
