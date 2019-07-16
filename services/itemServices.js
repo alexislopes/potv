@@ -6,8 +6,8 @@ function salva (item)  {
     new Item({name: item.name, price: item.price}).save();
 }
 
-function buscaPorNome(item){
-    return "Olavo"
+async function buscaTodos(){
+    return await Item.find({});
 }
 
-module.exports = { salva, buscaPorNome };
+module.exports = { salva, buscaTodos };
