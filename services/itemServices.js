@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 
-const Item = mongoose.model('items');
+const Item = mongoose.model('Item');
 
-function salva (item)  {
-    new Item({name: item.name, price: item.price}).save();
+async function create (item)  {
+    return await Item.create(item)
 }
 
-async function buscaTodos(){
+async function find(){
     return await Item.find({});
 }
 
-module.exports = { salva, buscaTodos };
+module.exports = { create, find };
