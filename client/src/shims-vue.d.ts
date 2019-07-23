@@ -5,3 +5,4 @@ declare module "*.vue" {
 
 declare module "v-money";
 declare module "vue-the-mask";
+declare module 'vue-flatpickr-component';
