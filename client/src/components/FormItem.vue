@@ -1,14 +1,50 @@
 <template>
-    <form @submit.prevent="insert">
-        <input required v-model="name" type="text" name="name" placeholder="nome">
-        <input required v-money="money" v-model="price" type="text" name="price" maxlength="15" placeholder="preço">
-        <input required v-model="brand" name="brand" type="text" placeholder="marca">
-        <!-- <input v-mask="['##/##/####']" v-model="timestamp" name="timestamp" placeholder="data"> -->
-        <flat-pickr required v-model="timestamp" :config="config"></flat-pickr>
-        <input required v-model="local" type="type" name="local" placeholder="local">
-        <input type="submit">
+    <form class="box container" @submit.prevent="insert">
+        <div class="field">
+            <div class="control">
+                <input class="inputx" type="text" required v-model="name" name="name" placeholder="Nome">
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="control">
+                <input class="input" required v-money="money" v-model="price" type="text" name="price" maxlength="15" placeholder="Preço">
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="control">
+                <input class="input" required v-model="brand" name="brand" type="text" placeholder="Marca">
+            </div>
+        </div>
+        
+        <div class="field is-primary">
+            <flat-pickr id="timestamp" required v-model="timestamp" :config="config"></flat-pickr>
+        </div>
+        <div class="field">
+            <div class="control">
+        <input class="input" required v-model="local" type="type" name="local" placeholder="Local">
+        </div>
+        </div>
+
+        <div class="field">
+            <div class="control">
+                <input id="btn-salvar" class="button is-dark" value="Salvar" type="submit">
+            </div>
+        </div>
     </form>
 </template>
+
+<style>
+.box {
+    width: 90%;
+}
+
+#btn-salvar {
+    width: 100%;
+}
+</style>
+
 
 <script lang="ts">
 import Vue from 'vue'
@@ -42,7 +78,9 @@ export default Vue.extend({
                 altFormat: "d/m/Y",
                 // dateFormat: "d/m/Y - H:i",
                 dateFormat: "F d, Y H:i:s",
-                defaultDate: new Date().getTime()
+                defaultDate: new Date().getTime(),
+                maxDate: new Date(), 
+                disableMobile: true
             }
         }
     },

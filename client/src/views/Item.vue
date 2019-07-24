@@ -1,6 +1,5 @@
 <template>
     <div class="item">
-        <h1>Adicione um Item</h1>
         <FormItem />
     </div>
 </template>
