@@ -1,36 +1,27 @@
 <template>
-    <form class="box container" @submit.prevent="insert">
+    <form class="ui form container" @submit.prevent="insert">
         <div class="field">
-            <div class="control">
-                <input class="inputx" type="text" required v-model="name" name="name" placeholder="Nome">
-            </div>
+            <input type="text" required v-model="name" name="name" placeholder="Nome">
         </div>
 
         <div class="field">
-            <div class="control">
-                <input class="input" required v-money="money" v-model="price" type="text" name="price" maxlength="15" placeholder="Preço">
-            </div>
+            <input required v-money="money" v-model="price" type="text" name="price" maxlength="15" placeholder="Preço">
         </div>
 
         <div class="field">
-            <div class="control">
-                <input class="input" required v-model="brand" name="brand" type="text" placeholder="Marca">
-            </div>
+            <input required v-model="brand" name="brand" type="text" placeholder="Marca">
         </div>
         
-        <div class="field is-primary">
-            <flat-pickr id="timestamp" required v-model="timestamp" :config="config"></flat-pickr>
-        </div>
         <div class="field">
-            <div class="control">
-        <input class="input" required v-model="local" type="type" name="local" placeholder="Local">
-        </div>
+            <flat-pickr id="timestamp" required v-model="timestamp" :config="config"></flat-pickr>
         </div>
 
         <div class="field">
-            <div class="control">
-                <input id="btn-salvar" class="button is-dark" value="Salvar" type="submit">
-            </div>
+            <input required v-model="local" type="text" name="local" placeholder="Local">
+        </div>
+
+        <div class="field">
+            <input id="btn-salvar" class="ui secondary button"  value="Salvar" type="submit">
         </div>
     </form>
 </template>
@@ -41,7 +32,9 @@
 }
 
 #btn-salvar {
-    width: 100%;
+    width: 10%;
+    float: left;
+    text-align: center;
 }
 </style>
 
@@ -66,7 +59,7 @@ export default Vue.extend({
             money: {
                 decimal: ',',
                 thousands: '.',
-                // prefix: 'R$ ',
+                prefix: 'R$ ',
                 // suffix: ' #',
                 precision: 2,
                 masked: false /* doesn't work with directive */
@@ -95,9 +88,11 @@ export default Vue.extend({
                 console.log(res);
                 if(res.status === 201){
                     console.log("criou");
+                    alert("criou: " + res.data.item.name);
                 }
             })
-        }
+            
+        },
     }, 
     components: {
         flatPickr
