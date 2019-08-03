@@ -1,25 +1,24 @@
-const { create, find } = require("../services/itemServices");
+const { create, find } = require("../services/tagServices");
 const { getDate } = require("../computed/formatDate");
 
-var feature = "Item"
+var frature = "Tag";
 
 module.exports = app => {
-    app.post("/item", async (req, res) => {
-        const item = await create(req.body);
+    app.post("/tag", async (req, res) => {
+        const tag = await create(req.body);
         res.status(201).json({
             status: { code: 201, message: "Created" },
-            item: item,
+            tag: tag,
             error: false,
             time: getDate()
-        });
-    });
+        })
+    })
 
-    app.get("/item", async (req, res) => {
-        const date = new Date();
-        const items = await find();
+    app.get("/tag", async (req ,res) => {
+        const tags = await find()
         res.status(200).json({
             status: {code: 200, message: "OK" }, 
-            items: items,
+            tags: tags,
             error: false,
             time: getDate()
         });
