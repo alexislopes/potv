@@ -4,22 +4,22 @@ const factory = require('../factories');
 const app = require('../../app');
 
 describe("Item Services", () => {
-    // test("should save an item into the database", async () => {
-    //   const { statusCode } = await request(app).post("/item").send({
-    //     name: "auuu",
-    //     tags: ["dasdasdasd", "dasdedfsrf"],
-    //     priceData: [
-    //         {
-    //           price: "2,50",
-    //           brand: "auau",
-    //           timestamp: 6516516518162,
-    //           local: "yamyam"
-    //         }
-    //     ]
-    //   });
+    test("should save an item into the database", async () => {
+      const { statusCode } = await request(app).post("/item").send({
+        name: "auuu",
+        tags: ["dasdasdasd", "dasdedfsrf"],
+        priceData: [
+            {
+              price: "2,50",
+              brand: "auau",
+              timestamp: 6516516518162,
+              local: "yamyam"
+            }
+        ]
+      });
 
-    //   expect(statusCode).toBe(201);
-    // })
+      expect(statusCode).toBe(201);
+    })
 
     test("should check if the find all route is returning status of 200", async () => {
       const { text, statusCode } = await request(app).get("/item").send()

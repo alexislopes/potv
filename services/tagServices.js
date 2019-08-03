@@ -10,4 +10,12 @@ async function find(){
     return await Tag.find({});
 }
 
-module.exports = { create, find };
+async function update(id, tag){
+    return await Tag.findByIdAndUpdate(id, tag);
+}
+
+async function deleteTag(id) {
+    return await Tag.findOneAndDelete(id);
+}
+
+module.exports = { create, find, update, deleteTag };
