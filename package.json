@@ -7,6 +7,8 @@
     "setupTestFrameworkScriptFile": "./tests/setup.js"
   },
   "scripts": {
+    "test:item": "npm run test tests/integration/itemServices.test.js",
+    "test:tag": "npm run test tests/integration/tagServices.test.js",
     "test": "jest",
     "start": "node app.js",
     "server": "nodemon app.js",
