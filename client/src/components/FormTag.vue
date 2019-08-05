@@ -4,7 +4,7 @@
             <input type="text" required v-model="name" name="name" placeholder="Nome">
         </div>
 
-            <verte v-model="color"  model="hex" draggable=false></verte>
+            <verte v-model="color"  model="hex"></verte>
 
         <div class="field">
             <input id="btn-salvar" class="ui secondary button"  value="Salvar" type="submit">
@@ -40,12 +40,9 @@ export default Vue.extend({
     methods: {
         insert(){    
             const tag = { name: this.name, color: this.color }
-            console.log(tag);
         
             axios.post("/tag", tag).then((res) => {
-                console.log(res);
                 if(res.status === 201){
-                    console.log("criou");
                     alert("criou: " + res.data.tag.name);
                 }
             })

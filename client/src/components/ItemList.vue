@@ -1,18 +1,18 @@
 <template>
 <div class="cards">
-    <p class="discription">Itens cadastrados: {{items.length}}</p>
+    <a class="ui teal label">Items: {{items.length}}</a>
 <div v-for="item in items" :key="item.id" class="ui card">
   <div class="content">
     <div class="header">{{item.name}}</div>
     <div class="description">
-      <p>R$ {{item.priceData.price}}</p>
+      <p>R$ {{item.priceData[0].price}}</p>
     </div>
   </div>
   <div class="extra content">
-    <p>{{format(new Date(item.priceData.timestamp))}}</p>
+    <p>{{format(new Date(item.priceData[0].timestamp))}}</p>
 </div>
   <div class="extra content">
-    <p>{{item.priceData.local}}</p>
+    <p>{{item.priceData[0].local}}</p>
     </div>
 </div>
 </div>
