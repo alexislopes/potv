@@ -1,4 +1,4 @@
-const { create, find, update, updatePriceData, deleteItem } = require("../services/itemServices");
+const { create, find, findByName, update, updatePriceData, deleteItem } = require("../services/itemServices");
 const { getDate } = require("../computed/formatDate");
 
 var feature = "Item"
@@ -22,6 +22,20 @@ module.exports = app => {
             error: false,
             time: getDate()
         });
+    })
+
+    app.get("/itemByName", async (req, res) => {
+        console.log("query: ", req.query.name);
+        const name = req.query.name;
+        console.log("name: ", name);
+        const item = await findByName(name);
+        console.log(item);
+        res.status(200).json({
+            status: { code: 200, message: "OK" },
+            item: item,
+            error: false,
+            time: getDate()
+        })
     })
 
     app.put("/item", async (req, res) => {

@@ -52,7 +52,6 @@ export default Vue.extend({
     methods: {
         async find() {
             await axios.get("/item").then(res => { this.items = res.data.items })
-            console.log(this.items);
         },
         format(date: Date){
             return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " - " + date.getHours() + ":" + date.getMinutes();

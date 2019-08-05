@@ -1,5 +1,5 @@
 <template>
-    <form class="ui form container" @submit.prevent="insert">
+    <form class="ui form container" @submit.prevent="salvar">
         <div class="field">
             <input type="text" required v-model="name" name="name" placeholder="Nome">
         </div>
@@ -36,22 +36,38 @@
     float: left;
     text-align: center;
 }
+
+
+
 </style>
 
 
 <script lang="ts">
+
+
+
 import Vue from 'vue'
 import axios from "axios"
 import { mask } from "vue-the-mask"
 import { VMoney } from "v-money"
+import vSelect from 'vue-select'
 import flatPickr from 'vue-flatpickr-component';
 import 'flatpickr/dist/flatpickr.css';
 import { Portuguese } from "flatpickr/dist/l10n/pt.js"
+import 'vue-select/dist/vue-select.css';
+import { VueAutosuggest } from 'vue-autosuggest';
+import autoComplete from "@tarekraafat/autocomplete.js/dist/js/autoComplete";
+import "@tarekraafat/autocomplete.js/dist/css/autoComplete.css"
+
 
 export default Vue.extend({
+    async mounted(){
+        await this.fetchItems();
+        this.getNames();
+    },
     data(){
         return {
-            name: null,
+            name: "",
             price: "0,00",
             timestamp: new Date().getTime(),
             local: null,
@@ -59,7 +75,7 @@ export default Vue.extend({
             money: {
                 decimal: ',',
                 thousands: '.',
-                prefix: 'R$ ',
+                //prefix: 'R$ ',
                 // suffix: ' #',
                 precision: 2,
                 masked: false /* doesn't work with directive */
@@ -74,28 +90,62 @@ export default Vue.extend({
                 defaultDate: new Date().getTime(),
                 maxDate: new Date(), 
                 disableMobile: true
-            }
+            },
+            items: [],
+            itemsName: []
         }
     },
     methods: {
         insert(){    
             let timestamp = new Date(this.timestamp).getTime();
             const item = { name: this.name, priceData: { price: this.price, brand: this.brand, timestamp: timestamp, local: this.local }}
-            
-            console.log("insert!!")
-            console.log(item);
             axios.post("/item", item).then((res) => {
-                console.log(res);
                 if(res.status === 201){
-                    console.log("criou");
                     alert("criou: " + res.data.item.name);
                 }
             })
             
         },
+        async update() {
+            let timestamp = new Date(this.timestamp).getTime();
+            let priceData = { price: this.price, brand: this.brand, timestamp: timestamp, local: this.local }
+            const name = { name: this.name }
+            
+            var item = null;
+            
+            await axios.get("/itemByName", { params: name}).then((res) => {
+                item = res.data.item[0];
+            });
+            const id = item._id;
+
+
+            axios.patch("/item", { id: id, priceData: priceData }).then((res) => {
+                if(res.status === 204){
+                    alert("atualizou: " + res.data.name);
+                }
+            })
+        },
+        salvar() {
+            if (this.itemsName.includes(this.name.toUpperCase())){
+                this.update();
+            } else {
+                this.insert();
+            }
+        },
+        async fetchItems(){
+            await axios.get("/item").then(res => { this.items = res.data.items })
+        },
+        getNames(){
+            this.items.forEach(e => {
+                this.itemsName.push(e.name.toUpperCase());
+            });
+        }
+        
     }, 
     components: {
-        flatPickr
+        flatPickr,
+        "v-select": vSelect,
+        VueAutosuggest
     },
     directives: {
         mask,

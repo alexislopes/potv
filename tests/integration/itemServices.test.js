@@ -71,4 +71,12 @@ describe("Item Services", () => {
       expect(statusCode).toBe(204);
     })
 
+    test("should fetch an item when a name is given", async () => {
+      const { statusCode } = await request(app).get("/itemByName").send({
+        name: "auuu"
+      })
+
+      expect(statusCode).toBe(200);
+    })
+
 })

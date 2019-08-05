@@ -25,4 +25,8 @@ async function deleteItem(id) {
     return await Item.findByIdAndDelete(id);
 }
 
-module.exports = { create, find, update, updatePriceData, deleteItem };
+async function findByName(name) {
+    return await Item.find({name: name});
+}
+
+module.exports = { create, find, findByName, update, updatePriceData, deleteItem };
