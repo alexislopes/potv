@@ -42,7 +42,7 @@
 </style>
 
 
-<script lang="ts">
+<script lang="js">
 
 
 
@@ -67,7 +67,7 @@ export default Vue.extend({
     },
     data(){
         return {
-            name: "",
+            name: "never",
             price: "0,00",
             timestamp: new Date().getTime(),
             local: null,
@@ -111,7 +111,7 @@ export default Vue.extend({
             let priceData = { price: this.price, brand: this.brand, timestamp: timestamp, local: this.local }
             const name = { name: this.name }
             
-            var item = null;
+            var item = { _id: "1" };
             
             await axios.get("/itemByName", { params: name}).then((res) => {
                 item = res.data.item[0];
