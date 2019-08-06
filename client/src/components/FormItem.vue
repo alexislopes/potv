@@ -67,7 +67,7 @@ export default Vue.extend({
     },
     data(){
         return {
-            name: "never",
+            name: "",
             price: "0,00",
             timestamp: new Date().getTime(),
             local: null,
@@ -153,4 +153,3 @@ export default Vue.extend({
     }
 })
 </script>
-
