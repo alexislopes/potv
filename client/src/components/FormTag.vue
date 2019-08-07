@@ -18,7 +18,6 @@
 }
 
 #btn-salvar {
-    width: 10%;
     float: left;
     text-align: center;
 }
