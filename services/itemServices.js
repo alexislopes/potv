@@ -6,8 +6,27 @@ async function create (item)  {
     return await Item.create(item)
 }
 
-async function find(){
+async function find() {
     return await Item.find({});
 }
 
-module.exports = { create, find };
+async function update(id, item) {
+    return await Item.findByIdAndUpdate(id, item);
+}
+
+async function updatePriceData(id, value) {
+    const item = await Item.findById(id);
+    var priceData = item.priceData;
+    priceData.push(value);
+    return await Item.findByIdAndUpdate(id, {priceData: priceData})
+}
+
+async function deleteItem(id) {
+    return await Item.findByIdAndDelete(id);
+}
+
+async function findByName(name) {
+    return await Item.find({name: name});
+}
+
+module.exports = { create, find, findByName, update, updatePriceData, deleteItem };
