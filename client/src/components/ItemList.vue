@@ -54,7 +54,17 @@ export default Vue.extend({
             await axios.get("/item").then(res => { this.items = res.data.items })
         },
         format(date: Date){
-            return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " - " + date.getHours() + ":" + date.getMinutes();
+          let dia = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sab", "Dom"];
+          let mes = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+          let minutos = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09"];
+
+          let minute: any = date.getMinutes();
+          if(date.getMinutes() < 10){
+            minute = minutos[date.getMinutes()]
+          }
+
+          return dia[date.getDay()] + " " + date.getDate() + " " + mes[date.getMonth()] + " " + date.getFullYear() + " " +  date.getHours() + ":" + minute;
+            // return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " - " + date.getHours() + ":" + date.getMinutes();
         }
     }
 })
