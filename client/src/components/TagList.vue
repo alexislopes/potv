@@ -1,6 +1,6 @@
 <template>
 <div class="cards">
-    <p class="discription">Tags cadastradas: {{tags.length}}</p>
+    <a class="ui teal label">Tags: {{tags.length}}</a>
 <div v-for="tag in tags" :key="tag.id" class="ui card">
   <div class="content">
     <div class="header">{{tag.name}}</div>
@@ -43,7 +43,6 @@ export default Vue.extend({
     methods: {
         async find() {
             await axios.get("/tag").then(res => { this.tags = res.data.tags })
-            console.log(this.tags);
         }
     }
 })
