@@ -80,12 +80,11 @@ export default Vue.extend({
                 masked: false /* doesn't work with directive */
             },
             config: {
-                locale: Portuguese,
                 enableTime: true,
                 altInput: true,
                 altFormat: "d/m/Y",
                 // dateFormat: "d/m/Y - H:i",
-                dateFormat: "F d, Y H:i:s",
+                dateFormat: "D, d M Y H:i:ss",
                 defaultDate: new Date().getTime(),
                 maxDate: new Date(), 
                 disableMobile: true
@@ -103,6 +102,8 @@ export default Vue.extend({
                     alert("criou: " + res.data.item.name);
                 }
             })
+            console.log("vues: ", this.timestamp)
+            console.log("let: ", timestamp)
             
         },
         async update() {
