@@ -10,6 +10,10 @@ async function find() {
     return await Item.find({});
 }
 
+async function findById(id){
+    return await Item.findById({ _id: id });
+}
+
 async function update(id, item) {
     return await Item.findByIdAndUpdate(id, item);
 }
@@ -29,4 +33,4 @@ async function findByName(name) {
     return await Item.find({name: name});
 }
 
-module.exports = { create, find, findByName, update, updatePriceData, deleteItem };
+module.exports = { create, find, findByName,findById, update, updatePriceData, deleteItem };

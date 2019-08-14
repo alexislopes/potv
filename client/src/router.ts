@@ -41,6 +41,11 @@ export default new Router({
       path: "/tags",
       name: "Tags",
       component: () => import("./views/Tags.vue")
+    },
+    {
+      path: "/itemDetails",
+      name: "Item Details",
+      component: () => import("./views/ItemDetails.vue")
     }
   ]
 });

@@ -1,8 +1,8 @@
 <template>
 <div class="cards">
     <a class="ui teal label">Items: {{items.length}}</a>
-<div v-for="item in items" :key="item.id" class="ui card">
-  <div class="content">
+<div v-for="item in items" :key="item.id" class="ui card" >
+  <div :id="item._id" @click="openItem($event)" class="content">
     <div class="header">{{item.name}}</div>
     <div class="description">
       <p>R$ {{item.priceData[0].price}}</p>
@@ -36,6 +36,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import axios from "axios"
+import { mapMutations } from "vuex";
 
 export default Vue.extend({
     mounted() {
@@ -50,6 +51,7 @@ export default Vue.extend({
         
     },
     methods: {
+      ...mapMutations(["setSelectedItemId"]),
         async find() {
             await axios.get("/item").then(res => { this.items = res.data.items })
         },
@@ -65,6 +67,10 @@ export default Vue.extend({
 
           return dia[date.getDay()] + " " + date.getDate() + " " + mes[date.getMonth()] + " " + date.getFullYear() + " " +  date.getHours() + ":" + minute;
             // return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " - " + date.getHours() + ":" + date.getMinutes();
+        },
+        openItem(e){
+          this.setSelectedItemId(e.currentTarget.id);
+          this.$router.push("/itemDetails");
         }
     }
 })
