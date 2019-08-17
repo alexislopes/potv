@@ -12,4 +12,5 @@ declare module 'vue-select';
 declare module 'vue-autosuggest';
 declare module '@tarekraafat/autocomplete.js/dist/js/autoComplete';
 declare module 'vuex-persist';
+declare module 'semantic-ui-vue';
 

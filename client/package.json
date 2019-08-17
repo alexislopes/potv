@@ -29,6 +29,7 @@
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
     "register-service-worker": "^1.6.2",
+    "semantic-ui-vue": "^0.8.1",
     "ts-jest": "^23.0.0",
     "typescript": "^3.4.3",
     "v-money": "^0.8.1",

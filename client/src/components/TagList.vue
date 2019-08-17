@@ -3,10 +3,8 @@
     <a class="ui teal label">Tags: {{tags.length}}</a>
 <div v-for="tag in tags" :key="tag.id" class="ui card">
   <div class="content">
-    <div class="header">{{tag.name}}</div>
-    <div class="description">
-      <p>{{tag.color}}</p>
-    </div>
+    <div class="stripe"></div>
+    <div :id="tag._id" class="header">{{tag.name}}</div>
   </div>
 </div>
 </div>
@@ -24,6 +22,9 @@
     margin-bottom: 2em;
 }
 
+p {
+  border-radius: 2em;
+}
 
 </style>
 
@@ -43,6 +44,10 @@ export default Vue.extend({
     methods: {
         async find() {
             await axios.get("/tag").then(res => { this.tags = res.data.tags })
+            this.tags.forEach(e => {
+              let p = document.getElementById(e._id);
+              p.setAttribute("style",  "color: " + e.color); 
+            });
         }
     }
 })
