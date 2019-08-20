@@ -1,78 +1,110 @@
 <template>
-<div class="cards">
-    <a class="ui teal label">Items: {{items.length}}</a>
-<div v-for="item in items" :key="item.id" class="ui card" >
-  <div :id="item._id" @click="openItem($event)" class="content">
-    <div class="header">{{item.name}}</div>
-    <div class="description">
-      <p>R$ {{item.priceData[0].price}}</p>
+  <div class="cards">
+    <a class="ui teal label">Items: {{ items.length }}</a>
+    <div v-for="item in items" :key="item.id" class="ui card">
+      <div :id="item._id" @click="openItem($event)" class="content">
+        <div class="header">{{ item.name }}</div>
+        <div class="description">
+          <p>R$ {{ item.priceData[0].price }}</p>
+        </div>
+      </div>
+      <div class="extra content">
+        <p>{{ format(new Date(item.priceData[0].timestamp)) }}</p>
+      </div>
+      <div class="extra content">
+        <p>{{ item.priceData[0].local }}</p>
+      </div>
     </div>
   </div>
-  <div class="extra content">
-    <p>{{format(new Date(item.priceData[0].timestamp))}}</p>
-</div>
-  <div class="extra content">
-    <p>{{item.priceData[0].local}}</p>
-    </div>
-</div>
-</div>
 </template>
 
 <style>
-
 .items {
   display: flex;
   justify-content: center;
-
 }
 
 .cards {
-    margin-bottom: 2em;
+  margin-bottom: 2em;
 }
-
-
 </style>
 
-<script lang="ts">
-import Vue from 'vue'
-import axios from "axios"
+<script lang="js">
+import Vue from "vue";
+import axios from "axios";
 import { mapMutations } from "vuex";
 
 export default Vue.extend({
-    mounted() {
-        this.find();
+  mounted() {
+    this.find();
+  },
+  data() {
+    return {
+      items: []
+    };
+  },
+  computed: {},
+  methods: {
+    ...mapMutations(["setSelectedItemId"]),
+    async find() {
+      await axios.get("/item").then(res => {
+        this.items = res.data.items;
+      });
     },
-    data() {
-        return {
-            items: []
-        }
-    },
-    computed: {
-        
-    },
-    methods: {
-      ...mapMutations(["setSelectedItemId"]),
-        async find() {
-            await axios.get("/item").then(res => { this.items = res.data.items })
-        },
-        format(date: Date){
-          let dia = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sab", "Dom"];
-          let mes = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
-          let minutos = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09"];
+    format(date) {
+      let dia = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sab", "Dom"];
+      let mes = [
+        "Jan",
+        "Fev",
+        "Mar",
+        "Abr",
+        "Mai",
+        "Jun",
+        "Jul",
+        "Ago",
+        "Set",
+        "Out",
+        "Nov",
+        "Dez"
+      ];
+      let minutos = [
+        "00",
+        "01",
+        "02",
+        "03",
+        "04",
+        "05",
+        "06",
+        "07",
+        "08",
+        "09"
+      ];
 
-          let minute: any = date.getMinutes();
-          if(date.getMinutes() < 10){
-            minute = minutos[date.getMinutes()]
-          }
+      let minute = date.getMinutes();
+      if (date.getMinutes() < 10) {
+        minute = minutos[date.getMinutes()];
+      }
 
-          return dia[date.getDay()] + " " + date.getDate() + " " + mes[date.getMonth()] + " " + date.getFullYear() + " " +  date.getHours() + ":" + minute;
-            // return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " - " + date.getHours() + ":" + date.getMinutes();
-        },
-        openItem(e){
-          this.setSelectedItemId(e.currentTarget.id);
-          this.$router.push("/itemDetails");
-        }
+      return (
+        dia[date.getDay()] +
+        " " +
+        date.getDate() +
+        " " +
+        mes[date.getMonth()] +
+        " " +
+        date.getFullYear() +
+        " " +
+        date.getHours() +
+        ":" +
+        minute
+      );
+      // return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " - " + date.getHours() + ":" + date.getMinutes();
+    },
+    openItem(e) {
+      this.setSelectedItemId(e.currentTarget.id);
+      console.log(e);
+      this.$router.push("/itemDetails");
     }
-})
+  }
+});
 </script>
-
