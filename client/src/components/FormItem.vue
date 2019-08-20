@@ -5,6 +5,11 @@
         </div>
 
         <div class="field">
+            <sui-dropdown v-model="selectTags" multiple fluid :options="tags" placeholder="Tags" search selection />
+            
+        </div>
+
+        <div class="field">
             <input required v-money="money" v-model="price" type="text" name="price" maxlength="15" placeholder="Preço">
         </div>
 
@@ -62,6 +67,7 @@ import "@tarekraafat/autocomplete.js/dist/css/autoComplete.css"
 export default Vue.extend({
     async mounted(){
         await this.fetchItems();
+        await this.fetchTags();
         this.getNames();
     },
     data(){
@@ -90,13 +96,15 @@ export default Vue.extend({
                 disableMobile: true
             },
             items: [],
-            itemsName: []
+            itemsName: [],
+            selectTags: null,
+            tags: []
         }
     },
     methods: {
         insert(){    
             let timestamp = new Date(this.timestamp).getTime();
-            const item = { name: this.name, priceData: { price: this.price, brand: this.brand, timestamp: timestamp, local: this.local }}
+            const item = { name: this.name, tags: this.selectTags, priceData: { price: this.price, brand: this.brand, timestamp: timestamp, local: this.local }}
             axios.post("/item", item).then((res) => {
                 if(res.status === 201){
                     alert("criou: " + res.data.item.name);
@@ -131,6 +139,14 @@ export default Vue.extend({
             } else {
                 this.insert();
             }
+        },
+        async fetchTags() {
+            let tags = [];
+            await axios.get("/tag").then(res => { tags = res.data.tags })
+            tags.forEach(e => {
+                this.tags.push({ key: e._id, value: e._id, text: e.name })
+            })
+            console.log(tags);
         },
         async fetchItems(){
             await axios.get("/item").then(res => { this.items = res.data.items })

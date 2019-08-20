@@ -1,4 +1,4 @@
-const { create, find, findByName, update, updatePriceData, deleteItem } = require("../services/itemServices");
+const { create, find, findByName, findById, update, updatePriceData, deleteItem } = require("../services/itemServices");
 const { getDate } = require("../computed/formatDate");
 
 var feature = "Item"
@@ -22,6 +22,18 @@ module.exports = app => {
             error: false,
             time: getDate()
         });
+    })
+
+    app.get("/itemById", async (req, res) => {
+        const id = req.query.id;
+        const item = await findById(id);
+        console.log(req.query);
+        res.status(200).json({
+            status: { code: 200, message: "OK" },
+            item: item,
+            error: false,
+            // time: getDate()
+        })
     })
 
     app.get("/itemByName", async (req, res) => {
