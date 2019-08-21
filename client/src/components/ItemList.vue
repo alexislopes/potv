@@ -52,7 +52,7 @@ export default Vue.extend({
       });
     },
     format(date) {
-      let dia = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"];
+      let dia = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sab", "Dom"];
       let mes = [
         "Jan",
         "Fev",
