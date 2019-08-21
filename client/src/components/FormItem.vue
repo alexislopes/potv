@@ -14,7 +14,7 @@
         </div>
 
         <div class="field">
-            <input required v-model="brand" name="brand" type="text" placeholder="Marca">
+            <input v-model="brand" name="brand" type="text" placeholder="Marca">
         </div>
         
         <div class="field">
