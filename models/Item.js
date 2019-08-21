@@ -7,7 +7,7 @@ const ItemSchema = new Schema({
     priceData: [
         {
             price: {type: String, require: [true, 'O preço do item é obrigatório.']},
-            brand: { type: String, require: [true, 'A marca do item é obrigatória.']},
+            brand: { type: String },
             timestamp: {type: Number},
             local: {type: String}
         }

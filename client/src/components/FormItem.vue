@@ -1,48 +1,60 @@
 <template>
-    <form class="ui form container" @submit.prevent="salvar">
-        <div class="field">
-            <input type="text" required v-model="name" name="name" placeholder="Nome">
-        </div>
+  <form class="ui form container" @submit.prevent="salvar">
+    <div class="field">
+      <input type="text" required v-model="name" name="name" placeholder="Nome" />
+    </div>
 
-        <div class="field">
-            <sui-dropdown v-model="selectTags" multiple fluid :options="tags" placeholder="Tags" search selection />
-            
-        </div>
+    <div class="field">
+      <sui-dropdown
+        v-model="selectTags"
+        multiple
+        fluid
+        :options="tags"
+        placeholder="Tags"
+        search
+        selection
+      />
+    </div>
 
-        <div class="field">
-            <input required v-money="money" v-model="price" type="text" name="price" maxlength="15" placeholder="Preço">
-        </div>
+    <div class="field">
+      <input
+        required
+        v-money="money"
+        v-model="price"
+        type="text"
+        name="price"
+        maxlength="15"
+        placeholder="Preço"
+      />
+    </div>
 
-        <div class="field">
-            <input required v-model="brand" name="brand" type="text" placeholder="Marca">
-        </div>
-        
-        <div class="field">
-            <flat-pickr id="timestamp" required v-model="timestamp" :config="config"></flat-pickr>
-        </div>
+    <div class="field">
+      <input v-model="brand" name="brand" type="text" placeholder="Marca" />
+    </div>
 
-        <div class="field">
-            <input required v-model="local" type="text" name="local" placeholder="Local">
-        </div>
+    <div class="field">
+      <flat-pickr id="timestamp" required v-model="timestamp" :config="config"></flat-pickr>
+    </div>
 
-        <div class="field">
-            <input id="btn-salvar" class="ui secondary button"  value="Salvar" type="submit">
-        </div>
-    </form>
+    <div class="field">
+      <input required v-model="local" type="text" name="local" placeholder="Local" />
+    </div>
+
+    <div class="field">
+      <input id="btn-salvar" class="ui secondary button" value="Salvar" type="submit" />
+    </div>
+  </form>
 </template>
 
 <style>
 .box {
-    width: 90%;
+  width: 90%;
 }
 
 #btn-salvar {
-    float: left;
-    text-align: center;
+  float: left;
+  text-align: center;
 }
-
-
-
 </style>
 
 
@@ -54,14 +66,10 @@ import Vue from 'vue'
 import axios from "axios"
 import { mask } from "vue-the-mask"
 import { VMoney } from "v-money"
-import vSelect from 'vue-select'
 import flatPickr from 'vue-flatpickr-component';
 import 'flatpickr/dist/flatpickr.css';
 import { Portuguese } from "flatpickr/dist/l10n/pt.js"
-import 'vue-select/dist/vue-select.css';
-import { VueAutosuggest } from 'vue-autosuggest';
-import autoComplete from "@tarekraafat/autocomplete.js/dist/js/autoComplete";
-import "@tarekraafat/autocomplete.js/dist/css/autoComplete.css"
+
 
 
 export default Vue.extend({
@@ -118,7 +126,6 @@ export default Vue.extend({
             let timestamp = new Date(this.timestamp).getTime();
             let priceData = { price: this.price, brand: this.brand, timestamp: timestamp, local: this.local }
             const name = { name: this.name }
-            
             var item = { _id: "1" };
             
             await axios.get("/itemByName", { params: name}).then((res) => {
@@ -157,15 +164,13 @@ export default Vue.extend({
             });
         }
         
-    }, 
+    },
     components: {
         flatPickr,
-        "v-select": vSelect,
-        VueAutosuggest
     },
     directives: {
         mask,
-        money :VMoney 
+        money :VMoney
     }
 })
 </script>
