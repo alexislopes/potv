@@ -5,6 +5,29 @@
     </div>
 
     <div class="field">
+      <div class="ui toggle checkbox">
+        <input @click="check($event)" type="checkbox" name="public" />
+        <label>Este item é uma fração</label>
+      </div>
+    </div>
+
+    <div id="hideen" class="field">
+      <div class="field">
+        <input type="text" required v-model="kg" name="kg" placeholder="Kg" />
+      </div>
+      <div class="field">
+        <input
+          v-money="money"
+          v-model="kgPrice"
+          type="text"
+          name="price"
+          maxlength="15"
+          placeholder="Preço KG"
+        />
+      </div>
+    </div>
+
+    <div class="field">
       <sui-dropdown
         v-model="selectTags"
         multiple
@@ -54,6 +77,15 @@
 #btn-salvar {
   float: left;
   text-align: center;
+}
+
+.toggle {
+  float: left;
+  margin-bottom: 1em;
+}
+
+#hideen {
+  display: none;
 }
 </style>
 
@@ -106,13 +138,16 @@ export default Vue.extend({
             items: [],
             itemsName: [],
             selectTags: null,
-            tags: []
+            tags: [],
+            kg: null,
+            kgPrice: null,
+            isFraction: false
         }
     },
     methods: {
         insert(){    
             let timestamp = new Date(this.timestamp).getTime();
-            const item = { name: this.name, tags: this.selectTags, priceData: { price: this.price, brand: this.brand, timestamp: timestamp, local: this.local }}
+            const item = { isFraction: this.isFraction, name: this.name, tags: this.selectTags, priceData: { kgData: { kg: this.kg, kgPrice: this.kgPrice }, price: this.price, brand: this.brand, timestamp: timestamp, local: this.local }}
             axios.post("/item", item).then((res) => {
                 if(res.status === 201){
                     alert("criou: " + res.data.item.name);
@@ -124,7 +159,7 @@ export default Vue.extend({
         },
         async update() {
             let timestamp = new Date(this.timestamp).getTime();
-            let priceData = { price: this.price, brand: this.brand, timestamp: timestamp, local: this.local }
+            let priceData = { kgData: { kg: this.kg, kgPrice: this.kgPrice }, price: this.price, brand: this.brand, timestamp: timestamp, local: this.local }
             const name = { name: this.name }
             var item = { _id: "1" };
             
@@ -157,6 +192,14 @@ export default Vue.extend({
         },
         async fetchItems(){
             await axios.get("/item").then(res => { this.items = res.data.items })
+        },
+        check(event){
+          console.log(event.target.checked);
+          if(event.target.checked){
+            document.getElementById("hideen").style = "display: block"
+          } else {
+            document.getElementById("hideen").style = "display: none"
+          }
         },
         getNames(){
             this.items.forEach(e => {
