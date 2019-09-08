@@ -49,6 +49,7 @@ export default Vue.extend({
     async find() {
       await axios.get("/item").then(res => {
         this.items = res.data.items;
+        console.log(this.items);
       });
     },
     format(date) {
