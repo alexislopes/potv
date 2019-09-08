@@ -1,14 +1,6 @@
 <template>
   <div id="app">
-    <div id="nav">
-      | <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link> |
-      <router-link to="/Item">Item</router-link> |
-      <router-link to="/Items">Items</router-link> |
-      <router-link to="/Tag">Tag</router-link> |
-      <router-link to="/Tags">Tags</router-link> |
-
-    </div>
+    <Header />
     <router-view />
   </div>
 </template>
@@ -34,3 +26,13 @@
   color: #42b983;
 }
 </style>
+
+<script>
+import Header from "../src/components/Header";
+
+export default {
+  components: {
+    Header
+  }
+};
+</script>

@@ -5,6 +5,14 @@
     </div>
 
     <div class="field">
+      <input v-model="brand" name="brand" type="text" placeholder="Marca" />
+    </div>
+
+    <div class="field">
+      <input required v-model="local" type="text" name="local" placeholder="Local" />
+    </div>
+
+    <div class="field">
       <div class="ui toggle checkbox">
         <input @click="check($event)" type="checkbox" name="public" />
         <label>Este item é uma fração</label>
@@ -49,10 +57,6 @@
         maxlength="15"
         placeholder="Preço"
       />
-    </div>
-
-    <div class="field">
-      <input v-model="brand" name="brand" type="text" placeholder="Marca" />
     </div>
 
     <div class="field">
