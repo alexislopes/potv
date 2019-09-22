@@ -1,37 +1,101 @@
 <template>
   <div class="item container">
-    <FormItem />
+    <!-- <add-fab /> -->
+    <div class="selectors">
+      <div class="tab items">
+        <a @click="displayItems()">Items</a>
+      </div>
+      <div class="tab notas">
+        <a @click="displayNotas()">Notas</a>
+      </div>
+    </div>
+    <div v-if="toggle">
+      <ItemAdicionar />
+      <ItemsLista />
+    </div>
+    <div v-else>
+      <NotaList />
+    </div>
+    <!-- <FormItem /> -->
+    <!-- <button class="btn-add ui circular right floated linkedin icon button">Adicionar</button> -->
+    <!-- <FormItem /> -->
   </div>
 </template>
 
-<style  scoped>
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+import ItemAdicionar from "@/components/ItemAdicionar.vue";
+import ItemsLista from "@/components/ItemsLista.vue";
+import NotaList from "@/components/NotaList.vue";
+import AddFab from "@/components/AddFab.vue";
+
+export default Vue.extend({
+  data() {
+    return {
+      toggle: true
+    };
+  },
+  methods: {
+    displayItems() {
+      this.toggle = true;
+    },
+    displayNotas() {
+      this.toggle = false;
+    }
+  },
+  components: {
+    ItemAdicionar,
+    ItemsLista,
+    NotaList,
+    AddFab
+  }
+});
+</script>
+
+<style scoped>
+.selectors {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: -100px;
+  grid-gap: 20px;
+  position: fixed;
+  z-index: 10;
+  background-color: aliceblue;
+  width: 100%;
+}
+
 .item {
   margin-top: 100px;
 }
 
-.nota-list a,
-.item-list a {
+.tab {
+  widows: 100%;
+  text-align: center;
+  padding: 20px;
+}
+
+.items-selector {
+  margin-left: 60px;
+  height: 100%;
+}
+
+a {
   cursor: pointer;
   color: #000000;
-  font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   font-size: 14px;
   line-height: 20px;
   padding: 10px 0;
 }
+
+.items-selector a:after {
+  content: "";
+  display: block;
+  background-color: yellow;
+}
 </style>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import FormItem from "@/components/FormItem.vue";
 
-@Component({
-  components: {
-    FormItem
-  }
-})
-export default class Item extends Vue {}
-</script>
 
 

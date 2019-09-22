@@ -73,7 +73,7 @@
   </form>
 </template>
 
-<style>
+<style scoped>
 .box {
   width: 90%;
 }

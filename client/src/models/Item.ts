@@ -20,3 +20,5 @@ class Item {
     this.tags = response.tags;
   }
 }
+
+export default Item;
