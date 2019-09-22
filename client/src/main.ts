@@ -40,7 +40,7 @@ Vue.filter("formatData", (timestamp: number) => {
     "Nov",
     "Dez"
   ];
-  let weekdays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex"];
+  let weekdays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
   let data = new Date(timestamp);
   return `${weekdays[data.getDay()]} • ${data.getDate()} ${
     months[data.getMonth()]
