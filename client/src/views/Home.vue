@@ -1,18 +1,30 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
-  </div>
+  <section>
+    <h1>Dashboard</h1>
+    <!-- <h1>Compre ou Venda</h1>
+    <produtos-buscar />
+    <produtos-lista />-->
+  </section>
 </template>
 
-<script lang="ts">
+<script>
 import { Component, Vue } from "vue-property-decorator";
-import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
+import ProdutosBuscar from "@/components/ProdutosBuscar.vue";
+import ProdutosLista from "@/components/ProdutosLista.vue";
 
-@Component({
+export default {
   components: {
-    HelloWorld
+    ProdutosBuscar,
+    ProdutosLista
   }
-})
-export default class Home extends Vue {}
+};
 </script>
+
+<style scoped>
+h1 {
+  margin-top: 40px;
+  color: #d4af37;
+  font-size: 2rem;
+  text-align: center;
+}
+</style>

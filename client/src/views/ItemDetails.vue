@@ -49,6 +49,7 @@ export default Vue.extend({
         async fetchItem(){
             console.log(this.selectedItem);
             const item = await axios.get("/itemById", { params: { id: this.selectedItem }})
+            console.log(item)
             this.currentItem = item.data.item;
             this.priceDataList = item.data.item.priceData
             console.log(item);

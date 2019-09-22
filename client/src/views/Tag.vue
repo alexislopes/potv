@@ -4,6 +4,15 @@
     </div>
 </template>
 
+<style scoped>
+
+.item {
+    margin-top: 100px;
+}
+
+</style>
+
+
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import FormTag from "@/components/FormTag.vue";
