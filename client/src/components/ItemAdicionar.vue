@@ -88,7 +88,14 @@
     <label for="descricao">Descrição</label>
       <textarea name="descricao" id="descricao"></textarea>-->
 
-      <input class="btn" type="button" value="Adicionar Produto" @click.prevent="salvar" />
+      <input
+        id="add-item"
+        class="btn"
+        type="button"
+        value="Adicionar Produto"
+        @click.prevent="salvar"
+      />
+      <Aviso v-if="aviso.mensagem" :mensagem="aviso.mensagem" :tipo="aviso.tipo" />
     </form>
   </transition>
 </template>
@@ -96,15 +103,22 @@
 <script>
 import { itemServices } from "../services/ItemServices";
 import { tagServices } from "../services/TagServices";
+import Aviso from "@/components/Aviso.vue";
 export default {
   name: "ProdutosAdicionar",
+  components: {
+    Aviso
+  },
   async mounted() {
     await this.fetchItems();
     // await this.fetchTags();
-    this.getNames();
   },
   data() {
     return {
+      aviso: {
+        mensagem: null,
+        tipo: null
+      },
       items: [],
       itemsName: [],
       tags: [],
@@ -136,68 +150,59 @@ export default {
     };
   },
   methods: {
-    updateIsFraction(event) {
-      if (event.target.checked) {
-        this.isFraction = true;
-      } else {
-        this.isFraction = false;
-      }
-    },
     async adicionarItem() {
-      await this.formataItem();
-      itemServices.createItem(this.item);
+      this.items = [];
+      this.formataItem();
+      itemServices.createItem(this.item).then(res => {
+        if (res.status === 201) {
+          this.disparaAviso("Item criado com sucesso", "success");
+        }
+      });
+    },
+    disparaAviso(mensagem, tipo) {
+      this.aviso = { mensagem: mensagem, tipo: tipo };
+      setTimeout(() => {
+        this.aviso = { mensagem: null, tipo: null };
+        document.getElementById("add-item").style.background = "yellow";
+        document.getElementById("add-item").disabled = false;
+      }, 3000);
     },
     async formataItem() {
       this.item.priceData[0].timestamp = await new Date(
         this.temptimestemp
       ).getTime();
     },
-    formatarProduto() {
-      this.produto.usuario_id = this.$store.state.usuario._id;
-      this.produto.priceData = [
-        {
-          price: "1.99",
-          brand: "Ana Maria",
-          timestamp: 1565563330105,
-          local: "Shibata"
-        }
-      ];
-    },
-    async adicionarProduto() {
-      await this.formatarProduto();
-      itemServices.createItem(this.produto).then(() => {
-        this.$store.dispatch("getUsuarioProdutos");
-      });
-    },
-    salvar() {
+    async salvar() {
+      document.getElementById("add-item").style.background = "#ccc";
+      document.getElementById("add-item").disabled = true;
       if (this.itemsName.includes(this.item.name.toUpperCase())) {
-        this.update();
+        await this.update();
       } else {
-        this.adicionarItem();
+        await this.adicionarItem();
       }
+      await this.$store.dispatch("getItems");
     },
     async update() {
-      // let timestamp = new Date(this.timestamp).getTime();
       await this.formataItem();
-      await itemServices.atualizaPriceData(
-        this.item.name,
-        this.item.priceData[0]
-      );
+      itemServices
+        .atualizaPriceData(this.item.name, this.item.priceData[0])
+        .then(res => {
+          console.log(res);
+          if (res.status === 204) {
+            this.disparaAviso("Item atualizado com sucesso", "success");
+          }
+        });
     },
     async fetchItems() {
       const items = await itemServices.fetchItems();
       this.items = items.data.items;
+      await this.getNames();
     },
     getNames() {
       this.items.forEach(e => {
         this.itemsName.push(e.name.toUpperCase());
       });
     }
-  },
-  async created() {
-    // let tags = await tagServices.fetchTags();
-    // this.tags = tags.data.tags;
-    // console.log(this.tags);
   }
 };
 </script>

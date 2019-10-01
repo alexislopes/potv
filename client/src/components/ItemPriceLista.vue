@@ -8,7 +8,7 @@
     <div class="info">
       <p class="preco">{{priceData.price | numeroPreco}}</p>
       <p class="local">{{priceData.local}}</p>
-      <p class="marca">{{priceData.marca}}</p>
+      <p class="marca">{{priceData.brand}}</p>
       <p class="timestamp">{{priceData.timestamp | formatData}}</p>
       <!-- <h2 class="titulo">{{produto.name}}</h2> -->
       <slot></slot>

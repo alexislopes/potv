@@ -46,13 +46,7 @@ export const itemServices = {
 
     const iid = itemByname._id;
 
-    const res = axios
-      .patch("/item", { id: iid, priceData: priceData })
-      .then(res => {
-        if (res.status === 204) {
-          alert("atualizou: " + res.data.name);
-        }
-      });
+    const res = axios.patch("/item", { id: iid, priceData: priceData });
 
     return res;
   }

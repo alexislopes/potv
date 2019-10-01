@@ -1,8 +1,8 @@
 <template>
   <section class="items-container">
     <transition mode="out-in">
-      <div v-if="items && items.length" class="items" key="items">
-        <div class="item" v-for="item in items" :key="item._id">
+      <div v-if="localitems && localitems.length" class="items" key="items">
+        <div class="item" v-for="item in localitems" :key="item._id">
           <router-link :to="{ name: 'produto', params: {id: item._id} }">
             <img src alt />
             <p class="preco">{{item.priceData[(item.priceData.length - 1)].price | numeroPreco}}</p>
@@ -22,23 +22,26 @@
 
 <script>
 import { itemServices } from "../services/ItemServices";
+import { mapState } from "vuex";
 
 export default {
   data() {
     return {
-      items: null
+      localitems: null
     };
   },
-  methods: {
-    getProdutos() {
-      this.items = null;
-      itemServices
-        .fetchItems("http://localhost:5000/item")
-        .then(response => (this.items = response.data.items));
+  computed: {
+    ...mapState(["items"])
+  },
+  watch: {
+    async items() {
+      this.localitems = this.items;
     }
   },
+  methods: {},
   created() {
-    this.getProdutos();
+    this.$store.dispatch("getItems");
+    this.localitems = this.items;
   }
 };
 </script>

@@ -9,9 +9,11 @@ import "vue-datetime/dist/vue-datetime.css";
 
 import PaginaCarregando from "./components/PaginaCarregando.vue";
 import ErroNotificacao from "./components/ErroNotificacao.vue";
+import Aviso from "./components/Aviso.vue";
 
 Vue.component("PaginaCarregando", PaginaCarregando);
 Vue.component("ErroNotificacao", ErroNotificacao);
+Vue.component("Aviso", Aviso);
 
 Vue.filter("numeroPreco", (valor: any) => {
   valor = Number(valor);
