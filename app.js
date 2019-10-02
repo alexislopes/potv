@@ -7,6 +7,7 @@ const keys = require("./config/keys");
 require("./models/Item");
 require("./models/Tag");
 require("./models/User");
+require("./models/Nota");
 
 mongoose.connect(keys.mongoURI, { useNewUrlParser: true });
 

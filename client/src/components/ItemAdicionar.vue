@@ -5,29 +5,26 @@
         <input id="kilo" type="checkbox" @click="updateIsFraction($event)" />
         <label for="kilo">Item por kilo</label>
       </div>
-      <!-- <label for="nome">Nome</label> -->
+
+      <div class="check">
+        <input id="nota" type="checkbox" @click="updateIsNota($event)" />
+        <label for="nota">É uma nota</label>
+      </div>
+
+      <input
+        v-if="isNota"
+        id="notatag"
+        name="notatag"
+        type="text"
+        v-model="nota.tags"
+        placeholder="Nota Tags"
+        key="tags"
+      />
+
       <input id="nome" name="nome" type="text" v-model="item.name" placeholder="Nome" />
 
       <input id="tag" name="tag" type="text" v-model="item.tags" placeholder="Tag" />
 
-      <!-- <select>
-        <option>Escolha algumas Tags</option>
-        <option v-for="tag in tags" :value="tag._id">{{tag.name}}</option>
-      </select>-->
-
-      <!-- <sui-dropdown
-        class="tags"
-        multiple
-        fluid
-        :options="tags"
-        placeholder="Tags"
-        search
-        selection
-        allow-additions
-        v-model="item.tags"
-      />-->
-
-      <!-- <label for="preco">Preço</label> -->
       <div class="price-data">
         <input
           id="preco"
@@ -54,14 +51,6 @@
         />
 
         <datetime placeholder="Data" type="datetime" v-model="temptimestemp"></datetime>
-
-        <!-- <input
-          id="data"
-          name="data"
-          type="text"
-          v-model="item.priceData[0].timestamp"
-          placeholder="Data"
-        />-->
       </div>
       <transition-group v-if="isFraction" mode="out-in" class="kg-input">
         <input
@@ -82,18 +71,21 @@
         />
       </transition-group>
 
-      <!-- <label for="fotos">fotos</label>
-    <input id="fotos" name="fotos" type="file" ref="fotos" />
-
-    <label for="descricao">Descrição</label>
-      <textarea name="descricao" id="descricao"></textarea>-->
-
       <input
         id="add-item"
         class="btn"
         type="button"
         value="Adicionar Produto"
         @click.prevent="salvar"
+      />
+
+      <input
+        v-if="isNota"
+        id="add-nota"
+        class="btn"
+        type="button"
+        value="Adicionar Nota"
+        @click.prevent="salvarNota"
       />
       <Aviso v-if="aviso.mensagem" :mensagem="aviso.mensagem" :tipo="aviso.tipo" />
     </form>
@@ -103,6 +95,7 @@
 <script>
 import { itemServices } from "../services/ItemServices";
 import { tagServices } from "../services/TagServices";
+import { notaServices } from "../services/NotaServices";
 import Aviso from "@/components/Aviso.vue";
 export default {
   name: "ProdutosAdicionar",
@@ -121,9 +114,16 @@ export default {
       },
       items: [],
       itemsName: [],
-      tags: [],
+      tags: "",
       isFraction: false,
+      isNota: false,
       temptimestemp: "",
+      nota: {
+        tags: "",
+        timestamp: "",
+        items: [],
+        local: ""
+      },
       item: {
         nome: "",
         tags: "",
@@ -139,21 +139,32 @@ export default {
             local: ""
           }
         ]
-      },
-      produto: {
-        name: "",
-        preco: "",
-        descricao: "",
-        fotos: null,
-        priceData: ""
       }
     };
   },
   methods: {
+    updateIsFraction(event) {
+      if (event.target.checked) {
+        this.isFraction = true;
+      } else {
+        this.isFraction = false;
+      }
+    },
+    updateIsNota(event) {
+      if (event.target.checked) {
+        this.isNota = true;
+      } else {
+        this.isNota = false;
+      }
+    },
     async adicionarItem() {
       this.items = [];
       this.formataItem();
       itemServices.createItem(this.item).then(res => {
+        if (this.isNota) {
+          this.nota.items.push(res.data.item._id);
+          console.log(this.nota);
+        }
         if (res.status === 201) {
           this.disparaAviso("Item criado com sucesso", "success");
         }
@@ -171,6 +182,9 @@ export default {
       this.item.priceData[0].timestamp = await new Date(
         this.temptimestemp
       ).getTime();
+      if (this.item.tags) {
+        this.item.tags = this.item.tags.split(",").map(e => e.trim());
+      }
     },
     async salvar() {
       document.getElementById("add-item").style.background = "#ccc";
@@ -181,6 +195,17 @@ export default {
         await this.adicionarItem();
       }
       await this.$store.dispatch("getItems");
+      this.fetchItems();
+    },
+    salvarNota() {
+      this.nota.timestamp = new Date(this.temptimestemp).getTime();
+      this.nota.tags = this.nota.tags.split(",").map(e => e.trim());
+      this.nota.local = this.item.priceData[0].local;
+      notaServices.createNota(this.nota).then(res => {
+        if (res.status === 201) {
+          this.disparaAviso("Nota adicionada com Sucesso", "success");
+        }
+      });
     },
     async update() {
       await this.formataItem();
@@ -188,7 +213,8 @@ export default {
         .atualizaPriceData(this.item.name, this.item.priceData[0])
         .then(res => {
           console.log(res);
-          if (res.status === 204) {
+          if (res.res.status === 204) {
+            this.nota.items.push(res.item._id);
             this.disparaAviso("Item atualizado com sucesso", "success");
           }
         });
@@ -213,6 +239,20 @@ label,
 input,
 .tags,
 .price-data {
+  grid-column: 2;
+}
+
+.check-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+}
+
+#nota {
+  grid-column: 2;
+}
+
+.notatag {
   grid-column: 2;
 }
 
@@ -258,6 +298,15 @@ input[type="checkbox"] {
   display: grid;
   grid-gap: 20px;
   grid-template-columns: 1fr 1fr;
+}
+
+.nota-input {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.nota-input input {
+  grid-column: 1;
 }
 
 select {

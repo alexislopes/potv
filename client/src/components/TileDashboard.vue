@@ -1,0 +1,55 @@
+<template>
+  <transition mode="out-in">
+    <div class="tile">
+      <h1>{{title}}</h1>
+      <p>{{value | numeroPreco}}</p>
+    </div>
+  </transition>
+</template>
+
+<script>
+import { DashboardServices } from "../services/DashboardServices";
+import axios from "axios";
+
+export default {
+  data() {
+    return {
+      value: 0
+    };
+  },
+  props: ["title", "endpoint"],
+  async created() {
+    await axios.get(this.endpoint).then(res => {
+      this.value = res.data.value;
+    });
+  }
+};
+</script>
+
+<style scoped>
+.tile {
+  box-shadow: 0 4px 8px rgba(30, 60, 90, 0.1);
+  padding: 10px;
+  background: #fff;
+  border-radius: 4px;
+  transition: all 0.2s;
+  border: 1px solid #ccc;
+}
+
+.tile:hover {
+  box-shadow: 0 6px 12px rgba(30, 60, 90, 0.2);
+  transform: scale(1.1);
+  position: relative;
+  z-index: 1;
+}
+
+.tile h1 {
+  text-align: center;
+}
+
+.tile p {
+  text-align: center;
+  padding: 45px 0;
+  font-size: 1.5em;
+}
+</style>

@@ -36,18 +36,12 @@ export const itemServices = {
     const name = { name: nome };
     var item = { _id: "1" };
 
-    // await axios.get("/itemByName", { params: name }).then(res => {
-    //   console.log(res);
-    //   item = res.data.item[0];
-    // });
-
     const itemByname = await this.fetchItemByName(nome);
-    console.log(itemByname);
 
     const iid = itemByname._id;
 
-    const res = axios.patch("/item", { id: iid, priceData: priceData });
+    const res = await axios.patch("/item", { id: iid, priceData: priceData });
 
-    return res;
+    return { item: itemByname, res: res };
   }
 };

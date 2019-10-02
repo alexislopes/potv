@@ -49,6 +49,24 @@ Vue.filter("formatData", (timestamp: number) => {
   } ${data.getFullYear()}`;
 });
 
+Vue.filter("mes", (mes: any) => {
+  let meses = [
+    "JANEIRO",
+    "FEVEREIRO",
+    "MARÇO",
+    "ABRIL",
+    "MAIO",
+    "JUNHO",
+    "JULHO",
+    "AGOSTO",
+    "SETEMBRO",
+    "OUTUBRO",
+    "NOVEMBRO",
+    "DEZEMBRO"
+  ];
+  return meses[mes];
+});
+
 Vue.config.productionTip = false;
 
 new Vue({
