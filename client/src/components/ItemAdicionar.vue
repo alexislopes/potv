@@ -5,29 +5,26 @@
         <input id="kilo" type="checkbox" @click="updateIsFraction($event)" />
         <label for="kilo">Item por kilo</label>
       </div>
-      <!-- <label for="nome">Nome</label> -->
+
+      <div class="check">
+        <input id="nota" type="checkbox" @click="updateIsNota($event)" />
+        <label for="nota">É uma nota</label>
+      </div>
+
+      <input
+        v-if="isNota"
+        id="notatag"
+        name="notatag"
+        type="text"
+        v-model="nota.tags"
+        placeholder="Nota Tags"
+        key="tags"
+      />
+
       <input id="nome" name="nome" type="text" v-model="item.name" placeholder="Nome" />
 
       <input id="tag" name="tag" type="text" v-model="item.tags" placeholder="Tag" />
 
-      <!-- <select>
-        <option>Escolha algumas Tags</option>
-        <option v-for="tag in tags" :value="tag._id">{{tag.name}}</option>
-      </select>-->
-
-      <!-- <sui-dropdown
-        class="tags"
-        multiple
-        fluid
-        :options="tags"
-        placeholder="Tags"
-        search
-        selection
-        allow-additions
-        v-model="item.tags"
-      />-->
-
-      <!-- <label for="preco">Preço</label> -->
       <div class="price-data">
         <input
           id="preco"
@@ -54,14 +51,6 @@
         />
 
         <datetime placeholder="Data" type="datetime" v-model="temptimestemp"></datetime>
-
-        <!-- <input
-          id="data"
-          name="data"
-          type="text"
-          v-model="item.priceData[0].timestamp"
-          placeholder="Data"
-        />-->
       </div>
       <transition-group v-if="isFraction" mode="out-in" class="kg-input">
         <input
@@ -82,13 +71,23 @@
         />
       </transition-group>
 
-      <!-- <label for="fotos">fotos</label>
-    <input id="fotos" name="fotos" type="file" ref="fotos" />
+      <input
+        id="add-item"
+        class="btn"
+        type="button"
+        value="Adicionar Produto"
+        @click.prevent="salvar"
+      />
 
-    <label for="descricao">Descrição</label>
-      <textarea name="descricao" id="descricao"></textarea>-->
-
-      <input class="btn" type="button" value="Adicionar Produto" @click.prevent="salvar" />
+      <input
+        v-if="isNota"
+        id="add-nota"
+        class="btn"
+        type="button"
+        value="Adicionar Nota"
+        @click.prevent="salvarNota"
+      />
+      <Aviso v-if="aviso.mensagem" :mensagem="aviso.mensagem" :tipo="aviso.tipo" />
     </form>
   </transition>
 </template>
@@ -96,20 +95,35 @@
 <script>
 import { itemServices } from "../services/ItemServices";
 import { tagServices } from "../services/TagServices";
+import { notaServices } from "../services/NotaServices";
+import Aviso from "@/components/Aviso.vue";
 export default {
   name: "ProdutosAdicionar",
+  components: {
+    Aviso
+  },
   async mounted() {
     await this.fetchItems();
     // await this.fetchTags();
-    this.getNames();
   },
   data() {
     return {
+      aviso: {
+        mensagem: null,
+        tipo: null
+      },
       items: [],
       itemsName: [],
-      tags: [],
+      tags: "",
       isFraction: false,
+      isNota: false,
       temptimestemp: "",
+      nota: {
+        tags: "",
+        timestamp: "",
+        items: [],
+        local: ""
+      },
       item: {
         nome: "",
         tags: "",
@@ -125,13 +139,6 @@ export default {
             local: ""
           }
         ]
-      },
-      produto: {
-        name: "",
-        preco: "",
-        descricao: "",
-        fotos: null,
-        priceData: ""
       }
     };
   },
@@ -143,61 +150,85 @@ export default {
         this.isFraction = false;
       }
     },
+    updateIsNota(event) {
+      if (event.target.checked) {
+        this.isNota = true;
+      } else {
+        this.isNota = false;
+      }
+    },
     async adicionarItem() {
-      await this.formataItem();
-      itemServices.createItem(this.item);
+      this.items = [];
+      this.formataItem();
+      itemServices.createItem(this.item).then(res => {
+        if (this.isNota) {
+          this.nota.items.push(res.data.item._id);
+          console.log(this.nota);
+        }
+        if (res.status === 201) {
+          this.disparaAviso("Item criado com sucesso", "success");
+        }
+      });
+    },
+    disparaAviso(mensagem, tipo) {
+      this.aviso = { mensagem: mensagem, tipo: tipo };
+      setTimeout(() => {
+        this.aviso = { mensagem: null, tipo: null };
+        document.getElementById("add-item").style.background = "yellow";
+        document.getElementById("add-item").disabled = false;
+      }, 3000);
     },
     async formataItem() {
       this.item.priceData[0].timestamp = await new Date(
         this.temptimestemp
       ).getTime();
-    },
-    formatarProduto() {
-      this.produto.usuario_id = this.$store.state.usuario._id;
-      this.produto.priceData = [
-        {
-          price: "1.99",
-          brand: "Ana Maria",
-          timestamp: 1565563330105,
-          local: "Shibata"
-        }
-      ];
-    },
-    async adicionarProduto() {
-      await this.formatarProduto();
-      itemServices.createItem(this.produto).then(() => {
-        this.$store.dispatch("getUsuarioProdutos");
-      });
-    },
-    salvar() {
-      if (this.itemsName.includes(this.item.name.toUpperCase())) {
-        this.update();
-      } else {
-        this.adicionarItem();
+      if (this.item.tags) {
+        this.item.tags = this.item.tags.split(",").map(e => e.trim());
       }
     },
+    async salvar() {
+      document.getElementById("add-item").style.background = "#ccc";
+      document.getElementById("add-item").disabled = true;
+      if (this.itemsName.includes(this.item.name.toUpperCase())) {
+        await this.update();
+      } else {
+        await this.adicionarItem();
+      }
+      await this.$store.dispatch("getItems");
+      this.fetchItems();
+    },
+    salvarNota() {
+      this.nota.timestamp = new Date(this.temptimestemp).getTime();
+      this.nota.tags = this.nota.tags.split(",").map(e => e.trim());
+      this.nota.local = this.item.priceData[0].local;
+      notaServices.createNota(this.nota).then(res => {
+        if (res.status === 201) {
+          this.disparaAviso("Nota adicionada com Sucesso", "success");
+        }
+      });
+    },
     async update() {
-      // let timestamp = new Date(this.timestamp).getTime();
       await this.formataItem();
-      await itemServices.atualizaPriceData(
-        this.item.name,
-        this.item.priceData[0]
-      );
+      itemServices
+        .atualizaPriceData(this.item.name, this.item.priceData[0])
+        .then(res => {
+          console.log(res);
+          if (res.res.status === 204) {
+            this.nota.items.push(res.item._id);
+            this.disparaAviso("Item atualizado com sucesso", "success");
+          }
+        });
     },
     async fetchItems() {
       const items = await itemServices.fetchItems();
       this.items = items.data.items;
+      await this.getNames();
     },
     getNames() {
       this.items.forEach(e => {
         this.itemsName.push(e.name.toUpperCase());
       });
     }
-  },
-  async created() {
-    // let tags = await tagServices.fetchTags();
-    // this.tags = tags.data.tags;
-    // console.log(this.tags);
   }
 };
 </script>
@@ -208,6 +239,20 @@ label,
 input,
 .tags,
 .price-data {
+  grid-column: 2;
+}
+
+.check-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+}
+
+#nota {
+  grid-column: 2;
+}
+
+.notatag {
   grid-column: 2;
 }
 
@@ -253,6 +298,15 @@ input[type="checkbox"] {
   display: grid;
   grid-gap: 20px;
   grid-template-columns: 1fr 1fr;
+}
+
+.nota-input {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.nota-input input {
+  grid-column: 1;
 }
 
 select {

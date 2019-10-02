@@ -9,9 +9,11 @@ import "vue-datetime/dist/vue-datetime.css";
 
 import PaginaCarregando from "./components/PaginaCarregando.vue";
 import ErroNotificacao from "./components/ErroNotificacao.vue";
+import Aviso from "./components/Aviso.vue";
 
 Vue.component("PaginaCarregando", PaginaCarregando);
 Vue.component("ErroNotificacao", ErroNotificacao);
+Vue.component("Aviso", Aviso);
 
 Vue.filter("numeroPreco", (valor: any) => {
   valor = Number(valor);
@@ -45,6 +47,24 @@ Vue.filter("formatData", (timestamp: number) => {
   return `${weekdays[data.getDay()]} • ${data.getDate()} ${
     months[data.getMonth()]
   } ${data.getFullYear()}`;
+});
+
+Vue.filter("mes", (mes: any) => {
+  let meses = [
+    "JANEIRO",
+    "FEVEREIRO",
+    "MARÇO",
+    "ABRIL",
+    "MAIO",
+    "JUNHO",
+    "JULHO",
+    "AGOSTO",
+    "SETEMBRO",
+    "OUTUBRO",
+    "NOVEMBRO",
+    "DEZEMBRO"
+  ];
+  return meses[mes];
 });
 
 Vue.config.productionTip = false;

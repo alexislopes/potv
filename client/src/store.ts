@@ -49,6 +49,7 @@ export default new Vuex.Store({
       cidade: "",
       estado: ""
     },
+    items: null,
     usuario_produtos: null
   },
   mutations: {
@@ -63,6 +64,9 @@ export default new Vuex.Store({
     },
     UPDATE_USUARIO_PRODUTOS(state, payload) {
       state.usuario_produtos = payload;
+    },
+    UPDATE_ITEMS(state, payload) {
+      state.items = payload;
     }
     // ADD_USUARIO_PRODUTOS(state, payload) {
     //   state.usuario_produtos.unshift(payload);
@@ -91,6 +95,11 @@ export default new Vuex.Store({
     },
     createItem(context, payload) {
       return itemServices.createItem(payload);
+    },
+    getItems(context, payload) {
+      return itemServices.fetchItems().then((res: any) => {
+        context.commit("UPDATE_ITEMS", res.data.items);
+      });
     },
     deslogarUsuario(context) {
       context.commit("UPDATE_USUARIO", {
