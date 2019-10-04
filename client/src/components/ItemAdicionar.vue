@@ -4,26 +4,43 @@
       <div class="check">
         <input id="kilo" type="checkbox" @click="updateIsFraction($event)" />
         <label for="kilo">Item por kilo</label>
-      </div>
-
-      <div class="check">
         <input id="nota" type="checkbox" @click="updateIsNota($event)" />
         <label for="nota">É uma nota</label>
       </div>
 
+      <div class="nota-info">
+        <input
+          v-if="isNota"
+          id="notatag"
+          name="notatag"
+          type="text"
+          v-model="notatags"
+          placeholder="Nota Tags"
+          key="tags"
+        />
+        <input
+          v-if="isNota"
+          id="itemqtd"
+          name="itemqtd"
+          type="number"
+          v-model="quantity"
+          placeholder="Quantidade"
+          key="qtd"
+        />
+      </div>
       <input
         v-if="isNota"
-        id="notatag"
-        name="notatag"
+        id="nota-title"
+        name="nota-title"
         type="text"
-        v-model="nota.tags"
-        placeholder="Nota Tags"
-        key="tags"
+        v-model="nota.title"
+        placeholder="Descrição"
+        key="desc"
       />
 
       <input id="nome" name="nome" type="text" v-model="item.name" placeholder="Nome" />
 
-      <input id="tag" name="tag" type="text" v-model="item.tags" placeholder="Tag" />
+      <input id="tag" name="tag" type="text" v-model="itemtags" placeholder="Tag" />
 
       <div class="price-data">
         <input
@@ -106,6 +123,7 @@ export default {
     await this.fetchItems();
     // await this.fetchTags();
   },
+
   data() {
     return {
       aviso: {
@@ -114,7 +132,8 @@ export default {
       },
       items: [],
       itemsName: [],
-      tags: "",
+      notatags: "",
+      itemtags: "",
       isFraction: false,
       isNota: false,
       temptimestemp: "",
@@ -122,8 +141,10 @@ export default {
         tags: "",
         timestamp: "",
         items: [],
-        local: ""
+        local: "",
+        title: ""
       },
+      quantity: "",
       item: {
         nome: "",
         tags: "",
@@ -162,11 +183,13 @@ export default {
       this.formataItem();
       itemServices.createItem(this.item).then(res => {
         if (this.isNota) {
-          this.nota.items.push(res.data.item._id);
-          console.log(this.nota);
+          this.nota.items.push({
+            item: res.data.item._id,
+            quantity: this.quantity
+          });
         }
         if (res.status === 201) {
-          this.disparaAviso("Item criado com sucesso", "success");
+          this.disparaAviso("Item criado!", "success");
         }
       });
     },
@@ -174,16 +197,16 @@ export default {
       this.aviso = { mensagem: mensagem, tipo: tipo };
       setTimeout(() => {
         this.aviso = { mensagem: null, tipo: null };
-        document.getElementById("add-item").style.background = "yellow";
+        document.getElementById("add-item").style.background = "#d4af37";
         document.getElementById("add-item").disabled = false;
-      }, 3000);
+      }, 5000);
     },
     async formataItem() {
       this.item.priceData[0].timestamp = await new Date(
         this.temptimestemp
       ).getTime();
-      if (this.item.tags) {
-        this.item.tags = this.item.tags.split(",").map(e => e.trim());
+      if (this.itemtags) {
+        this.item.tags = this.itemtags.split(",").map(e => e.trim());
       }
     },
     async salvar() {
@@ -199,11 +222,13 @@ export default {
     },
     salvarNota() {
       this.nota.timestamp = new Date(this.temptimestemp).getTime();
-      this.nota.tags = this.nota.tags.split(",").map(e => e.trim());
+      if (this.notatags) {
+        this.nota.tags = this.notatags.split(",").map(e => e.trim());
+      }
       this.nota.local = this.item.priceData[0].local;
       notaServices.createNota(this.nota).then(res => {
         if (res.status === 201) {
-          this.disparaAviso("Nota adicionada com Sucesso", "success");
+          this.disparaAviso("Nota adicionada!", "success");
         }
       });
     },
@@ -212,10 +237,12 @@ export default {
       itemServices
         .atualizaPriceData(this.item.name, this.item.priceData[0])
         .then(res => {
-          console.log(res);
           if (res.res.status === 204) {
-            this.nota.items.push(res.item._id);
-            this.disparaAviso("Item atualizado com sucesso", "success");
+            this.nota.items.push({
+              item: res.item._id,
+              quantity: this.quantity
+            });
+            this.disparaAviso("Item atualizado!", "success");
           }
         });
     },
@@ -248,12 +275,19 @@ input,
   grid-gap: 20px;
 }
 
+.nota-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column: 2;
+  grid-gap: 20px;
+}
+
 #nota {
   grid-column: 2;
 }
 
-.notatag {
-  grid-column: 2;
+#notatag {
+  grid-column: 1;
 }
 
 .check {
@@ -292,6 +326,10 @@ input[type="checkbox"] {
 
 .price-data #local {
   grid-column: 3;
+}
+
+#nota {
+  margin-left: 20px;
 }
 
 .kg-input {
