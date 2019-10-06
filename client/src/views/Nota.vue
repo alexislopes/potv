@@ -1,25 +1,30 @@
 <template>
   <section>
-    <div v-if="item" class="produto">
-      <ul class="fotos" v-if="item.fotos">
+    <div v-if="nota" class="produto">
+      <!-- <ul class="fotos" v-if="item.fotos">
         <li v-for="(foto, index) in  item.fotos" :key="key">
           <img :src="foto.src" :alt="foto.titulo" />
         </li>
-      </ul>
+      </ul>-->
       <div class="info">
-        <h1>{{item.name}}</h1>
-        <button v-if="item.vendido === 'false'" class="btn">Comprar</button>
+        <h1>{{nota.title}}</h1>
+        <p class="total">{{nota.getTotal() | numeroPreco}}</p>
+        <p class="data">{{nota.timestamp | formatData}} em {{nota.local}}</p>
 
         <div class="head">
-          <p class="preco">preço</p>
-          <p class="local">local</p>
-          <p class="marca">marca</p>
-          <p class="timestamp">data</p>
+          <p class="quantidade">quantidade</p>
+          <p class="item">Item</p>
+          <p class="fracao">fração</p>
+          <p class="valfr">valor/fração</p>
+          <p class="preco">Preço</p>
         </div>
-        <ItemPriceLista
-          v-for="priceData in item.priceData"
-          :key="priceData._id"
-          :priceData="priceData"
+        <NotaItem
+          v-if="nota"
+          v-for="item in nota.items"
+          :key="item._id"
+          :item="item.item"
+          :quantity="item.quantity"
+          :fixedPriceData="item.fixedPriceData"
         />
         <!-- <button v-else class="btn" disabled>Produto Vendido</button> -->
       </div>
@@ -30,28 +35,27 @@
 </template>
 
 <script>
-import { itemServices } from "../services/ItemServices";
-import ItemPriceLista from "@/components/ItemPriceLista.vue";
+import { notaServices } from "../services/NotaServices";
+import NotaItem from "../components/Nota/NotaItem";
 
 export default {
-  name: "Produto",
+  name: "Nota",
   props: ["id"],
-  components: {
-    ItemPriceLista
-  },
+  components: { NotaItem },
   data() {
     return {
-      item: null
+      nota: null
     };
   },
   methods: {
-    async fetchProduto() {
-      const item = await itemServices.fetchItem(this.id);
-      this.item = item;
+    async fetchNota() {
+      const nota = await notaServices.findById(this.id);
+      console.log("found: ", nota);
+      this.nota = nota;
     }
   },
   created() {
-    this.fetchProduto();
+    this.fetchNota();
   }
 };
 </script>
@@ -66,13 +70,24 @@ export default {
   margin: 0 auto;
 }
 
-.info h1 {
+/* .info h1 {
   margin-bottom: 60px;
+} */
+
+.total {
+  color: #e80;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.data {
+  margin-bottom: 60px;
+  font-weight: bold;
 }
 
 .head {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   grid-gap: 20px;
   width: 900px;
   align-self: end;
@@ -85,20 +100,24 @@ export default {
   margin-bottom: 20px;
 }
 
-.preco {
+.quantidade {
   grid-column: 1;
 }
 
-.local {
+.item {
   grid-column: 2;
 }
 
-.marca {
+.fracao {
   grid-column: 3;
 }
 
-.timestamp {
+.valfr {
   grid-column: 4;
+}
+
+.preco {
+  grid-column: 5;
 }
 
 /* .preco {

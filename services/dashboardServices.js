@@ -6,7 +6,7 @@ async function getCurrentMonthExpense() {
   let currentExpense = 0;
   let currentDate = new Date();
 
-  const items = await Item.find();
+  const items = await Item.find().populate("priceData");
 
   items.forEach(e => {
     e.priceData.forEach(el => {
@@ -23,7 +23,7 @@ async function getTodayExpense() {
   let todayExpense = 0;
   let currentDate = new Date();
 
-  const items = await Item.find();
+  const items = await Item.find().populate("priceData");
 
   items.forEach(e => {
     e.priceData.forEach(el => {
@@ -45,7 +45,7 @@ async function getCurrentYearExpense() {
   let currentYearExpense = 0;
   let currentDate = new Date();
 
-  const items = await Item.find();
+  const items = await Item.find().populate("priceData");
 
   items.forEach(e => {
     e.priceData.forEach(el => {

@@ -7,15 +7,15 @@ async function create(item) {
 }
 
 async function find() {
-  return await Item.find({});
+  return await Item.find({}).populate("priceData");
 }
 
 async function findById(id) {
-  return await Item.findById({ _id: id });
+  return await Item.findById({ _id: id }).populate("priceData");
 }
 
 async function update(id, item) {
-  return await Item.findByIdAndUpdate(id, item);
+  return await Item.findByIdAndUpdate(id, item).populate("priceData");
 }
 
 async function updatePriceData(id, value) {
@@ -27,11 +27,11 @@ async function updatePriceData(id, value) {
 }
 
 async function deleteItem(id) {
-  return await Item.findByIdAndDelete(id);
+  return await Item.findByIdAndDelete(id).populate("priceData");
 }
 
 async function findByName(name) {
-  return await Item.find({ name: name });
+  return await Item.find({ name: name }).populate("priceData");
 }
 
 module.exports = {

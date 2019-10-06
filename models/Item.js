@@ -5,21 +5,7 @@ const ItemSchema = new Schema({
   name: { type: String, required: [true, "O nome do item é obrigatório."] },
   tags: { type: Array, required: [true, "Adicione ao menos uma tag"] },
   isFraction: { type: Boolean },
-  priceData: [
-    {
-      kgData: {
-        kg: { type: String },
-        kgPrice: { type: String }
-      },
-      price: {
-        type: String,
-        require: [true, "O preço do item é obrigatório."]
-      },
-      brand: { type: String },
-      timestamp: { type: Number },
-      local: { type: String }
-    }
-  ]
+  priceData: [{ type: mongoose.Schema.Types.ObjectId, ref: "PriceData" }]
 });
 
 module.exports = mongoose.model("Item", ItemSchema);
