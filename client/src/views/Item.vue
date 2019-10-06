@@ -14,7 +14,7 @@
       <ItemsLista />
     </div>
     <div v-else>
-      <NotaList />
+      <nota-lista />
     </div>
     <!-- <FormItem /> -->
     <!-- <button class="btn-add ui circular right floated linkedin icon button">Adicionar</button> -->
@@ -26,10 +26,13 @@
 import { Component, Vue } from "vue-property-decorator";
 import ItemAdicionar from "@/components/ItemAdicionar.vue";
 import ItemsLista from "@/components/ItemsLista.vue";
-import NotaList from "@/components/NotaList.vue";
+import NotaLista from "@/components/Nota/NotaLista.vue";
 import AddFab from "@/components/AddFab.vue";
+import NotaCard from "@/components/Nota/NotaCard.vue";
+import { notaServices } from "../services/NotaServices";
 
 export default Vue.extend({
+  computed: {},
   data() {
     return {
       toggle: true
@@ -46,8 +49,9 @@ export default Vue.extend({
   components: {
     ItemAdicionar,
     ItemsLista,
-    NotaList,
-    AddFab
+    NotaLista,
+    AddFab,
+    NotaCard
   }
 });
 </script>

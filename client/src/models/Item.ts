@@ -2,7 +2,7 @@ class Item {
   id: string;
   name: string;
   isFraction: boolean;
-  priceData: PriceData;
+  priceData: Object;
   tags: Tag[];
 
   constructor(

@@ -3,7 +3,7 @@
     <form class="adicionar-produto">
       <div class="check">
         <input id="kilo" type="checkbox" @click="updateIsFraction($event)" />
-        <label for="kilo">Item por kilo</label>
+        <label for="kilo">Fração</label>
         <input id="nota" type="checkbox" @click="updateIsNota($event)" />
         <label for="nota">É uma nota</label>
       </div>
@@ -43,29 +43,11 @@
       <input id="tag" name="tag" type="text" v-model="itemtags" placeholder="Tag" />
 
       <div class="price-data">
-        <input
-          id="preco"
-          name="preco"
-          type="number"
-          v-model="item.priceData[0].price"
-          placeholder="Preço"
-        />
+        <input id="preco" name="preco" type="number" v-model="priceData.price" placeholder="Preço" />
 
-        <input
-          id="marca"
-          name="marca"
-          type="text"
-          v-model="item.priceData[0].brand"
-          placeholder="Marca"
-        />
+        <input id="marca" name="marca" type="text" v-model="priceData.brand" placeholder="Marca" />
 
-        <input
-          id="local"
-          name="local"
-          type="text"
-          v-model="item.priceData[0].local"
-          placeholder="Local"
-        />
+        <input id="local" name="local" type="text" v-model="priceData.local" placeholder="Local" />
 
         <datetime placeholder="Data" type="datetime" v-model="temptimestemp"></datetime>
       </div>
@@ -74,7 +56,7 @@
           id="kg"
           name="kg"
           type="number"
-          v-model="item.priceData[0].kgData.kg"
+          v-model="priceData.kgData.kg"
           placeholder="Kg"
           key="kg"
         />
@@ -82,7 +64,7 @@
           id="kgPrice"
           name="kgPrice"
           type="number"
-          v-model="item.priceData[0].kgData.kgPrice"
+          v-model="priceData.kgData.kgPrice"
           placeholder="Preço do Kg"
           key="kgp"
         />
@@ -113,14 +95,17 @@
 import { itemServices } from "../services/ItemServices";
 import { tagServices } from "../services/TagServices";
 import { notaServices } from "../services/NotaServices";
+import { priceDataServices } from "../services/PriceDataServices";
+import Nota from "@/models/Nota.ts";
 import Aviso from "@/components/Aviso.vue";
 export default {
-  name: "ProdutosAdicionar",
+  name: "ItemAdicionar",
   components: {
     Aviso
   },
   async mounted() {
     await this.fetchItems();
+    await priceDataServices.find();
     // await this.fetchTags();
   },
 
@@ -148,18 +133,14 @@ export default {
       item: {
         nome: "",
         tags: "",
-        priceData: [
-          {
-            kgData: {
-              kg: "",
-              kgPrice: ""
-            },
-            price: "",
-            brand: "",
-            timestamp: 0,
-            local: ""
-          }
-        ]
+        priceData: []
+      },
+      priceData: {
+        kgData: { kg: "", kgPrice: "" },
+        price: "",
+        brand: "",
+        timestamp: 0,
+        local: ""
       }
     };
   },
@@ -180,12 +161,18 @@ export default {
     },
     async adicionarItem() {
       this.items = [];
+      let priceData = "";
       this.formataItem();
-      itemServices.createItem(this.item).then(res => {
+      await priceDataServices.create(this.priceData).then(res => {
+        this.item.priceData.push(res._id);
+        priceData = res._id;
+      });
+      await itemServices.createItem(this.item).then(res => {
         if (this.isNota) {
           this.nota.items.push({
             item: res.data.item._id,
-            quantity: this.quantity
+            quantity: this.quantity,
+            fixedPriceData: priceData
           });
         }
         if (res.status === 201) {
@@ -202,9 +189,7 @@ export default {
       }, 5000);
     },
     async formataItem() {
-      this.item.priceData[0].timestamp = await new Date(
-        this.temptimestemp
-      ).getTime();
+      this.priceData.timestamp = await new Date(this.temptimestemp).getTime();
       if (this.itemtags) {
         this.item.tags = this.itemtags.split(",").map(e => e.trim());
       }
@@ -225,10 +210,13 @@ export default {
       if (this.notatags) {
         this.nota.tags = this.notatags.split(",").map(e => e.trim());
       }
-      this.nota.local = this.item.priceData[0].local;
-      notaServices.createNota(this.nota).then(res => {
+      this.nota.local = this.priceData.local;
+      const nota = new Nota(this.nota);
+      console.log(nota);
+
+      notaServices.createNota(nota).then(res => {
         if (res.status === 201) {
-          this.disparaAviso("Nota adicionada!", "success");
+          this.disparaAviso("Nota criada!", "success");
         }
       });
     },

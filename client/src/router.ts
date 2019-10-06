@@ -2,6 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import Home from "./views/Home.vue";
 import Produto from "./views/Produto.vue";
+import Nota from "./views/Nota.vue";
 
 Vue.use(Router);
 
@@ -52,6 +53,12 @@ const router = new Router({
       path: "/produto/:id",
       name: "produto",
       component: Produto,
+      props: true
+    },
+    {
+      path: "/nota/:id",
+      name: "nota",
+      component: Nota,
       props: true
     },
     {
