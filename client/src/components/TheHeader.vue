@@ -7,7 +7,7 @@
       <div class="menu">
         <router-link class="item-link" to="/Item">Items</router-link>
       </div>
-      <router-link v-if="$store.state.carteira.sources" to="/carteira">
+      <router-link v-if="$store.state.carteira.sources.length > 0" to="/carteira">
         <carteira />
       </router-link>
       <p v-else class="valor btn" @click="novaCarteira">
@@ -28,6 +28,9 @@ export default {
   components: {
     Carteira
   },
+  created() {
+    console.log(this.$store.state.carteira);
+  },
   computed: {
     nome() {
       return this.$store.state.usuario.nome.replace(/ .*/, "");
@@ -37,7 +40,12 @@ export default {
     ...mapActions(["createCarteira"]),
     novaCarteira() {
       this.createCarteira().then(res => {
-        console.log("glu: ", res);
+        if (res.sources.length > 0) {
+          this.$store.dispatch("updateAviso", {
+            mensagem: "Carteira criada!",
+            tipo: "success"
+          });
+        }
       });
     }
   }

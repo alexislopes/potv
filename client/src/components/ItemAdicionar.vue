@@ -86,7 +86,6 @@
         value="Adicionar Nota"
         @click.prevent="salvarNota"
       />
-      <Aviso v-if="aviso.mensagem" :mensagem="aviso.mensagem" :tipo="aviso.tipo" />
     </form>
   </transition>
 </template>
@@ -97,12 +96,10 @@ import { tagServices } from "../services/TagServices";
 import { notaServices } from "../services/NotaServices";
 import { priceDataServices } from "../services/PriceDataServices";
 import Nota from "@/models/Nota.ts";
-import Aviso from "@/components/Aviso.vue";
+
 export default {
   name: "ItemAdicionar",
-  components: {
-    Aviso
-  },
+  components: {},
   async mounted() {
     await this.fetchItems();
     await priceDataServices.find();
@@ -111,10 +108,6 @@ export default {
 
   data() {
     return {
-      aviso: {
-        mensagem: null,
-        tipo: null
-      },
       items: [],
       itemsName: [],
       notatags: "",
@@ -176,17 +169,12 @@ export default {
           });
         }
         if (res.status === 201) {
-          this.disparaAviso("Item criado!", "success");
+          this.$store.dispatch("updateAviso", {
+            mensagem: "Item criado!",
+            tipo: "success"
+          });
         }
       });
-    },
-    disparaAviso(mensagem, tipo) {
-      this.aviso = { mensagem: mensagem, tipo: tipo };
-      setTimeout(() => {
-        this.aviso = { mensagem: null, tipo: null };
-        document.getElementById("add-item").style.background = "#d4af37";
-        document.getElementById("add-item").disabled = false;
-      }, 5000);
     },
     async formataItem() {
       this.priceData.timestamp = await new Date(this.temptimestemp).getTime();
@@ -195,8 +183,8 @@ export default {
       }
     },
     async salvar() {
-      document.getElementById("add-item").style.background = "#ccc";
-      document.getElementById("add-item").disabled = true;
+      // document.getElementById("add-item").style.background = "#ccc";
+      // document.getElementById("add-item").disabled = true;
       if (this.itemsName.includes(this.item.name.toUpperCase())) {
         await this.update();
       } else {
@@ -216,7 +204,10 @@ export default {
 
       notaServices.createNota(nota).then(res => {
         if (res.status === 201) {
-          this.disparaAviso("Nota criada!", "success");
+          this.$store.dispatch("updateAviso", {
+            mensagem: "Nota criada!",
+            tipo: "success"
+          });
         }
       });
     },
@@ -230,7 +221,10 @@ export default {
               item: res.item._id,
               quantity: this.quantity
             });
-            this.disparaAviso("Item atualizado!", "success");
+            this.$store.dispatch("updateAviso", {
+              mensagem: "Item atualizado!",
+              tipo: "success"
+            });
           }
         });
     },

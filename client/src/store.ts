@@ -18,6 +18,10 @@ export default new Vuex.Store({
   strict: true,
   plugins: [vuexPersist.plugin],
   state: {
+    aviso: {
+      mensagem: "",
+      tipo: ""
+    },
     carteira: { _id: null, sources: [] },
     login: false,
     item: {
@@ -84,10 +88,10 @@ export default new Vuex.Store({
       }
 
       state.carteira = tempCarteira;
+    },
+    UPDATE_AVISO(state, payload) {
+      state.aviso = payload;
     }
-    // ADD_USUARIO_PRODUTOS(state, payload) {
-    //   state.usuario_produtos.unshift(payload);
-    // }
   },
   actions: {
     getUsuarioProdutos(context) {
@@ -135,6 +139,13 @@ export default new Vuex.Store({
     updateSource(context, payload) {
       context.commit("UPDATE_SOURCE", payload);
     },
+    updateAviso(context, payload) {
+      console.log("payload em store: ", payload);
+      context.commit("UPDATE_AVISO", payload);
+      setTimeout(() => {
+        context.commit("UPDATE_AVISO", { mensagem: "", tipo: "" });
+      }, 5000);
+    },
     async createCarteira(context, payload) {
       const carteira = await carteiraServices.create({
         sources: [
@@ -144,6 +155,7 @@ export default new Vuex.Store({
         ]
       });
       context.commit("UPDATE_CARTEIRA", carteira);
+      return carteira
     },
     deslogarUsuario(context) {
       context.commit("UPDATE_USUARIO", {
