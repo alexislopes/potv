@@ -140,7 +140,6 @@ export default new Vuex.Store({
       context.commit("UPDATE_SOURCE", payload);
     },
     updateAviso(context, payload) {
-      console.log("payload em store: ", payload);
       context.commit("UPDATE_AVISO", payload);
       setTimeout(() => {
         context.commit("UPDATE_AVISO", { mensagem: "", tipo: "" });
@@ -155,7 +154,7 @@ export default new Vuex.Store({
         ]
       });
       context.commit("UPDATE_CARTEIRA", carteira);
-      return carteira
+      return carteira;
     },
     deslogarUsuario(context) {
       context.commit("UPDATE_USUARIO", {

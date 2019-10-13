@@ -28,9 +28,7 @@ export default {
   components: {
     Carteira
   },
-  created() {
-    console.log(this.$store.state.carteira);
-  },
+  created() {},
   computed: {
     nome() {
       return this.$store.state.usuario.nome.replace(/ .*/, "");

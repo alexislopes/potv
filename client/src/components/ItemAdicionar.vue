@@ -1,5 +1,5 @@
 <template>
-  <transition mode="out-in">
+  <transition class="transition" mode="out-in">
     <form class="adicionar-produto">
       <div class="check">
         <input id="kilo" type="checkbox" @click="updateIsFraction($event)" />
@@ -38,7 +38,15 @@
         key="desc"
       />
 
-      <input id="nome" name="nome" type="text" v-model="item.name" placeholder="Nome" />
+      <input
+        @keyup="keyReleased"
+        @keydown="keyPressed"
+        id="nome"
+        name="nome"
+        type="text"
+        v-model="item.name"
+        placeholder="Nome"
+      />
 
       <input id="tag" name="tag" type="text" v-model="itemtags" placeholder="Tag" />
 
@@ -108,6 +116,8 @@ export default {
 
   data() {
     return {
+      typingTimer: null,
+      interval: 1500,
       items: [],
       itemsName: [],
       notatags: "",
@@ -123,8 +133,10 @@ export default {
         title: ""
       },
       quantity: "",
+      id: "",
       item: {
         nome: "",
+        name_lower: "",
         tags: "",
         priceData: []
       },
@@ -181,11 +193,10 @@ export default {
       if (this.itemtags) {
         this.item.tags = this.itemtags.split(",").map(e => e.trim());
       }
+      this.item.name_lower = this.item.name.toLowerCase();
     },
     async salvar() {
-      // document.getElementById("add-item").style.background = "#ccc";
-      // document.getElementById("add-item").disabled = true;
-      if (this.itemsName.includes(this.item.name.toUpperCase())) {
+      if (this.id) {
         await this.update();
       } else {
         await this.adicionarItem();
@@ -200,7 +211,6 @@ export default {
       }
       this.nota.local = this.priceData.local;
       const nota = new Nota(this.nota);
-      console.log(nota);
 
       notaServices.createNota(nota).then(res => {
         if (res.status === 201) {
@@ -212,21 +222,51 @@ export default {
       });
     },
     async update() {
+      let priceData = "";
       await this.formataItem();
-      itemServices
-        .atualizaPriceData(this.item.name, this.item.priceData[0])
-        .then(res => {
-          if (res.res.status === 204) {
-            this.nota.items.push({
-              item: res.item._id,
-              quantity: this.quantity
-            });
+      await priceDataServices.create(this.priceData).then(res => {
+        if (res) {
+          priceData = res._id;
+
+          this.item.priceData.push(res._id);
+          itemServices.atualizaItem(this.id, this.item).then(res => {
+            if (this.isNota) {
+              this.nota.items.push({
+                item: this.id,
+                quantity: this.quantity,
+                fixedPriceData: priceData
+              });
+            }
             this.$store.dispatch("updateAviso", {
               mensagem: "Item atualizado!",
               tipo: "success"
             });
-          }
-        });
+          });
+        }
+      });
+    },
+    keyReleased() {
+      clearTimeout(this.typingTimer);
+      this.typingTimer = setTimeout(() => {
+        this.fetchItemName();
+      }, this.interval);
+    },
+    keyPressed() {
+      clearTimeout(this.typingTimer);
+    },
+    fetchItemName() {
+      itemServices.fetchItemByName(this.item.name).then(res => {
+        if (res) {
+          this.id = res.id;
+          res.priceData.forEach(priceData => {
+            this.item.priceData.push(priceData._id);
+          });
+          this.$store.dispatch("updateAviso", {
+            mensagem: "Item recuperado!",
+            tipo: "success"
+          });
+        }
+      });
     },
     async fetchItems() {
       const items = await itemServices.fetchItems();
@@ -243,6 +283,10 @@ export default {
 </script>
 
 <style scoped>
+.transition {
+  margin-top: 60px;
+}
+
 label,
 .kg-input,
 input,
@@ -338,6 +382,7 @@ select {
 }
 
 .adicionar-produto {
+  margin-top: 60px;
   display: grid;
   grid-template-columns: 1fr 900px 1fr;
   align-items: center;
