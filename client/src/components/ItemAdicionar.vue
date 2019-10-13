@@ -187,6 +187,7 @@ export default {
           });
         }
       });
+      this.item.priceData = []
     },
     async formataItem() {
       this.priceData.timestamp = await new Date(this.temptimestemp).getTime();
@@ -241,6 +242,7 @@ export default {
               mensagem: "Item atualizado!",
               tipo: "success"
             });
+            this.item.priceData = [];
           });
         }
       });
