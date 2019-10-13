@@ -5,6 +5,7 @@ import VuexPersist from "vuex-persist";
 import { userServices } from "@/services/UserServices";
 import { itemServices } from "@/services/ItemServices";
 import { authServices } from "./services/AuthServices";
+import { carteiraServices } from "./services/CarteiraServices";
 
 Vue.use(Vuex);
 
@@ -17,6 +18,11 @@ export default new Vuex.Store({
   strict: true,
   plugins: [vuexPersist.plugin],
   state: {
+    aviso: {
+      mensagem: "",
+      tipo: ""
+    },
+    carteira: { _id: null, sources: [] },
     login: false,
     item: {
       __v: 0,
@@ -67,10 +73,25 @@ export default new Vuex.Store({
     },
     UPDATE_ITEMS(state, payload) {
       state.items = payload;
+    },
+    UPDATE_CARTEIRA(state, payload) {
+      state.carteira = payload;
+    },
+    UPDATE_SOURCE(state, payload) {
+      let tempCarteira = state.carteira;
+      if (state.carteira.sources != null) {
+        tempCarteira.sources.forEach((source: any) => {
+          if (source.type === payload.type) {
+            source.balance = payload.balance;
+          }
+        });
+      }
+
+      state.carteira = tempCarteira;
+    },
+    UPDATE_AVISO(state, payload) {
+      state.aviso = payload;
     }
-    // ADD_USUARIO_PRODUTOS(state, payload) {
-    //   state.usuario_produtos.unshift(payload);
-    // }
   },
   actions: {
     getUsuarioProdutos(context) {
@@ -100,6 +121,40 @@ export default new Vuex.Store({
       return itemServices.fetchItems().then((res: any) => {
         context.commit("UPDATE_ITEMS", res.data.items);
       });
+    },
+    async getCarteira(context, payload) {
+      return await carteiraServices.find().then((res: any) => {
+        if (res) {
+          context.commit("UPDATE_CARTEIRA", res);
+        }
+      });
+    },
+    updateCarteira(context, payload) {
+      return carteiraServices
+        .update(this.state.carteira._id, this.state.carteira)
+        .then((res: any) => {
+          context.dispatch("getCarteira");
+        });
+    },
+    updateSource(context, payload) {
+      context.commit("UPDATE_SOURCE", payload);
+    },
+    updateAviso(context, payload) {
+      context.commit("UPDATE_AVISO", payload);
+      setTimeout(() => {
+        context.commit("UPDATE_AVISO", { mensagem: "", tipo: "" });
+      }, 5000);
+    },
+    async createCarteira(context, payload) {
+      const carteira = await carteiraServices.create({
+        sources: [
+          { type: "Nubank", balance: 0 },
+          { type: "Itaú", balance: 0 },
+          { type: "Dinheiro", balance: 0 }
+        ]
+      });
+      context.commit("UPDATE_CARTEIRA", carteira);
+      return carteira;
     },
     deslogarUsuario(context) {
       context.commit("UPDATE_USUARIO", {

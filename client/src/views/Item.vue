@@ -1,6 +1,5 @@
 <template>
   <div class="item container">
-    <!-- <add-fab /> -->
     <div class="selectors">
       <div class="tab items">
         <a @click="displayItems()">Items</a>
@@ -9,16 +8,12 @@
         <a @click="displayNotas()">Notas</a>
       </div>
     </div>
-    <div v-if="toggle">
-      <ItemAdicionar />
-      <ItemsLista />
+
+    <div class="contents">
+      <ItemAdicionar v-if="toggle" />
+      <ItemsLista v-if="toggle" />
+      <nota-lista v-else />
     </div>
-    <div v-else>
-      <nota-lista />
-    </div>
-    <!-- <FormItem /> -->
-    <!-- <button class="btn-add ui circular right floated linkedin icon button">Adicionar</button> -->
-    <!-- <FormItem /> -->
   </div>
 </template>
 
@@ -60,20 +55,18 @@ export default Vue.extend({
 .selectors {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  margin-top: -100px;
   grid-gap: 20px;
   position: fixed;
   z-index: 10;
-  background-color: aliceblue;
-  width: 100%;
-}
-
-.item {
-  margin-top: 100px;
+  background-color: #fff;
+  margin: 20px;
+  margin-top: -60px;
+  box-shadow: 0 4px 8px rgba(30, 60, 90, 0.1);
+  width: 97%;
+  border-radius: 4px;
 }
 
 .tab {
-  widows: 100%;
   text-align: center;
   padding: 20px;
 }
@@ -81,6 +74,11 @@ export default Vue.extend({
 .items-selector {
   margin-left: 60px;
   height: 100%;
+}
+
+.container {
+  margin-top: 180px;
+  margin-bottom: 20px;
 }
 
 a {
@@ -93,11 +91,11 @@ a {
   padding: 10px 0;
 }
 
-.items-selector a:after {
+/* .items-selector a:after {
   content: "";
   display: block;
   background-color: yellow;
-}
+} */
 </style>
 
 

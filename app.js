@@ -9,6 +9,7 @@ require("./models/Tag");
 require("./models/User");
 require("./models/Nota");
 require("./models/PriceData");
+require("./models/Carteira");
 
 mongoose.connect(keys.mongoURI, { useNewUrlParser: true });
 

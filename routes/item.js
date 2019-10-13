@@ -35,7 +35,8 @@ module.exports = app => {
   });
 
   app.get("/itemByName", async (req, res) => {
-    const name = req.query.name;
+    const name = req.query.name_lower;
+    console.log(name);
     const item = await findByName(name);
     res.status(200).json({
       item: item

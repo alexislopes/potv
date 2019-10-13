@@ -4,6 +4,7 @@ const user = require("./user");
 const dashboard = require("./dashboard");
 const nota = require("./nota");
 const priceData = require("./priceData");
+const carteira = require("./carteira");
 
 module.exports = app => {
   item(app);
@@ -12,4 +13,5 @@ module.exports = app => {
   dashboard(app);
   nota(app);
   priceData(app);
+  carteira(app);
 };

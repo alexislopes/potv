@@ -5,6 +5,11 @@
       <transition mode="out-in">
         <router-view />
       </transition>
+      <Aviso
+        v-if="$store.state.aviso.mensagem"
+        :mensagem="$store.state.aviso.mensagem"
+        :tipo="$store.state.aviso.tipo"
+      />
     </main>
     <TheFooter />
   </div>
@@ -126,11 +131,13 @@ img {
 <script>
 import TheHeader from "../src/components/TheHeader";
 import TheFooter from "../src/components/TheFooter";
+import Aviso from "@/components/Aviso.vue";
 
 export default {
   components: {
     TheHeader,
-    TheFooter
+    TheFooter,
+    Aviso
   }
 };
 </script>

@@ -29,6 +29,10 @@ export default {
 </script>
 
 <style scoped>
+section {
+  margin-top: 120px;
+}
+
 h1 {
   margin-top: 40px;
   color: #d4af37;

@@ -31,7 +31,7 @@ async function deleteItem(id) {
 }
 
 async function findByName(name) {
-  return await Item.find({ name: name }).populate("priceData");
+  return await Item.find({ name_lower: name }).populate("priceData");
 }
 
 module.exports = {
