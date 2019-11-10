@@ -1,33 +1,36 @@
 <template>
   <transition class="transition" mode="out-in">
+    <!-- <p class="info-nota">Adicionando produtos da tal em tal dia</p> -->
     <form class="adicionar-produto">
-      <div class="check">
+      <!-- <div class="check">
         <input id="kilo" type="checkbox" @click="updateIsFraction($event)" />
         <label for="kilo">Fração</label>
         <input id="nota" type="checkbox" @click="updateIsNota($event)" />
         <label for="nota">É uma nota</label>
-      </div>
+      </div>-->
 
-      <div class="nota-info">
-        <input
-          v-if="isNota"
-          id="notatag"
-          name="notatag"
-          type="text"
-          v-model="notatags"
-          placeholder="Nota Tags"
-          key="tags"
-        />
-        <input
-          v-if="isNota"
-          id="itemqtd"
-          name="itemqtd"
-          type="number"
-          v-model="quantity"
-          placeholder="Quantidade"
-          key="qtd"
-        />
-      </div>
+      <input
+        v-if="isNota"
+        id="notatag"
+        name="notatag"
+        type="text"
+        v-model="notatags"
+        placeholder="Nota Tags"
+        key="tags"
+      />
+
+      <input
+        v-if="isNota"
+        id="local"
+        name="local"
+        type="text"
+        v-model="priceData.local"
+        placeholder="Local"
+      />
+
+      <datetime v-if="isNota" id="date" placeholder="Data" type="datetime" v-model="temptimestemp"></datetime>
+
+      <!-- <div class="nota-info"></div>
       <input
         v-if="isNota"
         id="nota-title"
@@ -36,9 +39,15 @@
         v-model="nota.title"
         placeholder="Descrição"
         key="desc"
-      />
+      />-->
+
+      <p
+        v-if="!isNota"
+        class="info-nota"
+      >Adicionando produtos da {{nota.title}} em {{temptimestemp | formatData}}</p>
 
       <input
+        v-if="!isNota"
         @keyup="keyReleased"
         @keydown="keyPressed"
         id="nome"
@@ -48,37 +57,56 @@
         placeholder="Nome"
       />
 
-      <input id="tag" name="tag" type="text" v-model="itemtags" placeholder="Tag" />
+      <input v-if="!isNota" id="tag" name="tag" type="text" v-model="itemtags" placeholder="Tag" />
 
-      <div class="price-data">
+      <div v-if="!isNota" class="price-data">
         <input id="preco" name="preco" type="number" v-model="priceData.price" placeholder="Preço" />
 
         <input id="marca" name="marca" type="text" v-model="priceData.brand" placeholder="Marca" />
 
-        <input id="local" name="local" type="text" v-model="priceData.local" placeholder="Local" />
+        <input
+          id="itemqtd"
+          name="itemqtd"
+          type="number"
+          v-model="quantity"
+          placeholder="Quantidade"
+          key="qtd"
+        />
 
-        <datetime placeholder="Data" type="datetime" v-model="temptimestemp"></datetime>
-      </div>
-      <transition-group v-if="isFraction" mode="out-in" class="kg-input">
         <input
           id="kg"
           name="kg"
           type="number"
           v-model="priceData.kgData.kg"
-          placeholder="Kg"
+          placeholder="Peso"
           key="kg"
         />
-        <!-- <input
+        <!-- <input id="local" name="local" type="text" v-model="priceData.local" placeholder="Local" /> -->
+
+        <!-- <datetime placeholder="Data" type="datetime" v-model="temptimestemp"></datetime> -->
+      </div>
+      <!-- <transition-group v-if="isFraction" mode="out-in" class="kg-input">
+        <input
           id="kgPrice"
           name="kgPrice"
           type="number"
           v-model="priceData.kgData.kgPrice"
           placeholder="Preço do Kg"
           key="kgp"
-        /> -->
-      </transition-group>
+        />
+      </transition-group>-->
 
       <input
+        v-if="isNota"
+        id="add-item-to-nota"
+        class="btn"
+        type="button"
+        value="Adicionar Produtos à Nota"
+        @click.prevent="setNotaTitle()"
+      />
+
+      <input
+        v-if="!isNota"
         id="add-item"
         class="btn"
         type="button"
@@ -87,7 +115,7 @@
       />
 
       <input
-        v-if="isNota"
+        v-if="!isNota"
         id="add-nota"
         class="btn"
         type="button"
@@ -113,7 +141,6 @@ export default {
     await priceDataServices.find();
     // await this.fetchTags();
   },
-
   data() {
     return {
       typingTimer: null,
@@ -122,8 +149,8 @@ export default {
       itemsName: [],
       notatags: "",
       itemtags: "",
-      isFraction: false,
-      isNota: false,
+      isFraction: true,
+      isNota: true,
       temptimestemp: "",
       nota: {
         tags: "",
@@ -164,6 +191,10 @@ export default {
         this.isNota = false;
       }
     },
+    setNotaTitle() {
+      this.nota.title = `Nota ${(Math.random() * 1).toFixed(4)}`;
+      this.isNota = false;
+    },
     async adicionarItem() {
       this.items = [];
       let priceData = "";
@@ -173,7 +204,7 @@ export default {
         priceData = res._id;
       });
       await itemServices.createItem(this.item).then(res => {
-        if (this.isNota) {
+        if (!this.isNota) {
           this.nota.items.push({
             item: res.data.item._id,
             quantity: this.quantity,
@@ -187,7 +218,7 @@ export default {
           });
         }
       });
-      this.item.priceData = []
+      this.item.priceData = [];
     },
     async formataItem() {
       this.priceData.timestamp = await new Date(this.temptimestemp).getTime();
@@ -206,7 +237,7 @@ export default {
       this.fetchItems();
       this.id = null;
     },
-    salvarNota() {
+    async salvarNota() {
       this.nota.timestamp = new Date(this.temptimestemp).getTime();
       if (this.notatags) {
         this.nota.tags = this.notatags.split(",").map(e => e.trim());
@@ -220,8 +251,29 @@ export default {
             mensagem: "Nota criada!",
             tipo: "success"
           });
+          this.nota = {
+            tags: "",
+            timestamp: "",
+            items: [],
+            local: "",
+            title: ""
+          };
         }
       });
+
+      this.isNota = true;
+      await this.limpaForm();
+    },
+    limpaForm() {
+      this.notatags = [];
+      this.priceData.local = null;
+      this.temptimestemp = null;
+      this.item.name = null;
+      this.itemtags = [];
+      this.priceData.price = null;
+      this.priceData.brand = null;
+      this.quantity = null;
+      this.priceData.kgData.kg = null;
     },
     async update() {
       let priceData = "";
@@ -232,7 +284,7 @@ export default {
 
           this.item.priceData.push(res._id);
           itemServices.atualizaItem(this.id, this.item).then(res => {
-            if (this.isNota) {
+            if (!this.isNota) {
               this.nota.items.push({
                 item: this.id,
                 quantity: this.quantity,
@@ -315,8 +367,14 @@ input,
   grid-column: 2;
 }
 
+.info-nota {
+  grid-column: 2;
+  text-align: center;
+  margin: 0 auto;
+}
+
 #notatag {
-  grid-column: 1;
+  grid-column: 2;
 }
 
 .check {
@@ -341,6 +399,14 @@ input[type="checkbox"] {
 
 #data {
   grid-column: 4;
+}
+
+#itemqtd {
+  grid-column: 3;
+}
+
+.vdatetime {
+  grid-column: 2;
 }
 
 .price-data {
@@ -381,11 +447,12 @@ select {
 }
 
 #kg {
-  grid-column: 1;
+  grid-column: 4;
 }
 
 .adicionar-produto {
-  margin-top: 60px;
+  position: inherit;
+  margin-top: 0px;
   display: grid;
   grid-template-columns: 1fr 900px 1fr;
   align-items: center;
