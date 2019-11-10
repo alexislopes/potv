@@ -64,6 +64,7 @@ export default Vue.extend({
   box-shadow: 0 4px 8px rgba(30, 60, 90, 0.1);
   width: 97%;
   border-radius: 4px;
+  margin-bottom: 60px;
 }
 
 .tab {
