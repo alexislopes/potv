@@ -68,14 +68,14 @@
           placeholder="Kg"
           key="kg"
         />
-        <input
+        <!-- <input
           id="kgPrice"
           name="kgPrice"
           type="number"
           v-model="priceData.kgData.kgPrice"
           placeholder="Preço do Kg"
           key="kgp"
-        />
+        /> -->
       </transition-group>
 
       <input
@@ -204,6 +204,7 @@ export default {
       }
       await this.$store.dispatch("getItems");
       this.fetchItems();
+      this.id = null;
     },
     salvarNota() {
       this.nota.timestamp = new Date(this.temptimestemp).getTime();
