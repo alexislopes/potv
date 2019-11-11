@@ -10,6 +10,7 @@
 <script>
 import { DashboardServices } from "../services/DashboardServices";
 import axios from "axios";
+import Nota from "../models/Nota";
 
 export default {
   data() {
@@ -19,8 +20,12 @@ export default {
   },
   props: ["title", "endpoint"],
   async created() {
+    let value = 0;
     await axios.get(this.endpoint).then(res => {
-      this.value = res.data.value;
+      res.data.value.forEach(e => {
+        let nota = new Nota(e);
+        this.value += nota.getTotal();
+      });
     });
   }
 };

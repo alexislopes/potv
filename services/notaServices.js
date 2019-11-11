@@ -11,7 +11,6 @@ async function find() {
     .populate("items.item")
     .populate("items.fixedPriceData");
 
-  console.log(notas);
   return notas;
 }
 

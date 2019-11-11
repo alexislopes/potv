@@ -1,62 +1,56 @@
 const mongoose = require("mongoose");
 
-const Item = mongoose.model("Item");
+const { find } = require("../services/notaServices");
 
 async function getCurrentMonthExpense() {
-  let currentExpense = 0;
   let currentDate = new Date();
+  let nicenotas = [];
 
-  const items = await Item.find().populate("priceData");
+  const notas = await find();
 
-  items.forEach(e => {
-    e.priceData.forEach(el => {
-      if (new Date(el.timestamp).getMonth() === currentDate.getMonth()) {
-        currentExpense += Number(el.price);
-      }
-    });
+  notas.forEach(e => {
+    if (new Date(e.timestamp).getMonth() === currentDate.getMonth()) {
+      nicenotas.push(e);
+    }
   });
 
-  return currentExpense;
+  return nicenotas;
 }
 
 async function getTodayExpense() {
-  let todayExpense = 0;
   let currentDate = new Date();
+  let nicenotas = [];
 
-  const items = await Item.find().populate("priceData");
+  const notas = await find();
 
-  items.forEach(e => {
-    e.priceData.forEach(el => {
-      let itemDate = new Date(el.timestamp);
-      if (
-        itemDate.getMonth() === currentDate.getMonth() &&
-        itemDate.getDate() === currentDate.getDate() &&
-        itemDate.getFullYear() === currentDate.getFullYear()
-      ) {
-        todayExpense += Number(el.price);
-      }
-    });
+  notas.forEach(e => {
+    let notaDate = new Date(e.timestamp);
+    if (
+      notaDate.getMonth() === currentDate.getMonth() &&
+      notaDate.getDate() === currentDate.getDate() &&
+      notaDate.getFullYear() === currentDate.getFullYear()
+    ) {
+      nicenotas.push(e);
+    }
   });
 
-  return todayExpense;
+  return nicenotas;
 }
 
 async function getCurrentYearExpense() {
-  let currentYearExpense = 0;
   let currentDate = new Date();
+  let nicenotas = [];
 
-  const items = await Item.find().populate("priceData");
+  const notas = await find();
 
-  items.forEach(e => {
-    e.priceData.forEach(el => {
-      let itemDate = new Date(el.timestamp);
-      if (itemDate.getFullYear() === currentDate.getFullYear()) {
-        currentYearExpense += Number(el.price);
-      }
-    });
+  notas.forEach(e => {
+    let notaDate = new Date(e.timestamp);
+    if (notaDate.getFullYear() === currentDate.getFullYear()) {
+      nicenotas.push(e);
+    }
   });
 
-  return currentYearExpense;
+  return nicenotas;
 }
 
 module.exports = {
