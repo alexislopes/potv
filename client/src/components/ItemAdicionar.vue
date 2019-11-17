@@ -9,6 +9,13 @@
         <label for="nota">É uma nota</label>
       </div>-->
 
+      <!-- <select class="ui fluid search dropdown" multiple>
+        <option value>State</option>
+        <option value="AL">Alabama</option>
+        <option value="AK">Alaska</option>
+        <option value="AZ">Arizona</option>
+      </select>-->
+
       <input
         v-if="isNota"
         id="notatag"
@@ -137,6 +144,7 @@ export default {
   name: "ItemAdicionar",
   components: {},
   async mounted() {
+    // $(this.$el).dropdown();
     await this.fetchItems();
     await priceDataServices.find();
     // await this.fetchTags();

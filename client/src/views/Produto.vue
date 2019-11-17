@@ -8,6 +8,7 @@
       </ul>
       <div class="info">
         <h1>{{item.name}}</h1>
+        <p class="tag" v-for="tag in item.tags">{{tag}}</p>
         <button v-if="item.vendido === 'false'" class="btn">Comprar</button>
 
         <div class="head">
@@ -64,9 +65,11 @@ export default {
   max-width: 900px;
   padding: 60px 20px;
   margin: 0 auto;
+  margin-top: 80px;
 }
 
-.info h1 {
+.tag {
+  margin-top: 20px;
   margin-bottom: 60px;
 }
 

@@ -18,15 +18,28 @@ export default {
       value: 0
     };
   },
-  props: ["title", "endpoint"],
+  props: ["title", "endpoint", "total"],
   async created() {
+    // console.log("endpoint: ", this.endpoint);
+    // console.log("title: ", this.title);
+    // console.log("total: ", this.total);
+    // console.log();
+
     let value = 0;
-    await axios.get(this.endpoint).then(res => {
-      res.data.value.forEach(e => {
-        let nota = new Nota(e);
-        this.value += nota.getTotal();
+
+    if (this.endpoint) {
+      await axios.get(this.endpoint).then(res => {
+        res.data.value.forEach(e => {
+          let nota = new Nota(e);
+          this.value += nota.getTotal();
+        });
       });
-    });
+    }
+
+    if (this.total) {
+      // console.log("do TIle: ", total);
+      this.value = this.total;
+    }
   }
 };
 </script>
