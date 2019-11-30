@@ -8,7 +8,9 @@
       </ul>
       <div class="info">
         <h1>{{item.name}}</h1>
-        <p class="tag" v-for="tag in item.tags">{{tag}}</p>
+        <div class="tags">
+          <p class="tag" v-for="tag in item.tags">{{tag}}</p>
+        </div>
         <button v-if="item.vendido === 'false'" class="btn">Comprar</button>
 
         <div class="head">
@@ -17,11 +19,14 @@
           <p class="marca">marca</p>
           <p class="timestamp">data</p>
         </div>
-        <ItemPriceLista
-          v-for="priceData in item.priceData"
-          :key="priceData._id"
-          :priceData="priceData"
-        />
+
+        <div class="prices">
+          <ItemPriceLista
+            v-for="priceData in item.priceData"
+            :key="priceData._id"
+            :priceData="priceData"
+          />
+        </div>
         <!-- <button v-else class="btn" disabled>Produto Vendido</button> -->
       </div>
     </div>
@@ -68,10 +73,22 @@ export default {
   margin-top: 80px;
 }
 
-.tag {
+.tags {
+  display: flex;
   margin-top: 20px;
   margin-bottom: 60px;
 }
+
+.tag {
+  margin-right: 20px;
+}
+
+/* .prices {
+  max-height: 400px;
+  max-width: auto;
+  overflow: hidden;
+  z-index: -1;
+} */
 
 .head {
   display: grid;
